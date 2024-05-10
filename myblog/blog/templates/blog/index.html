@@ -1,0 +1,76 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'blog/css/index.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row g-2">
+        <div class="col-xxl-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title font">Python</h5>
+                    <p class="card-text mt-4">Изучай Python вместе со мной!</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title font">Html and Css</h5>
+                    <p class="card-text">Больше фичей по данному направлению</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title font">JS</h5>
+                    <p class="card-text">Однако он может пригодиться</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title font">Bootstrap</h5>
+                    <p class="card-text">Прикольные штуки можно вытворять</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col text-center">
+            <a href="#" class="btn btn-category">Смотреть больше категорий</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block about_me %}
+<div class="container ">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="{% static 'blog/image/men.png' %}" alt="My Photo" class="img-fluid rounded">
+        </div>
+        <div class="col-md-6">
+            <div class="about-me">
+
+                <h2 class="font">Не много о себе</h2>
+                <p>
+                    Привет! Меня зовут <span class="font-monospace">Дворф Чаклун</span>, я программист и автор этого блога. Люблю делиться своими знаниями о Python,
+                    веб-разработке, а также других интересных темах, связанных с программированием. В этом блоге вы найдёте множество
+                    полезной информации, так что зарегистрируйтесь и присоединяйтесь к нам!
+                </p>
+                <p>
+                    Так же ты сам можешь брать и делать свои посты
+                </p>
+    
+                <a href="#" class="btn btn-go">Поехали</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
