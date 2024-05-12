@@ -1,0 +1,46 @@
+.btn-nav {
+  border: none;
+}
+
+.nav-item:hover {
+  border-bottom-color: rgba(20, 184, 144, 1);
+  cursor: default;
+  color: rgba(20, 184, 144, 1);
+}
+
+.navbar-brand a {
+  margin-right: 8px;
+  color: #4caf50;
+  
+}
+
+.navbar-nav .nav-item {
+  font-size: 20px;
+  border-bottom: 2px solid transparent; /* Начальное состояние */
+  transition: color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.navbar-nav .nav-items a {
+  color: #666666; /* Начальный цвет текста */
+  text-decoration: none;
+}
+
+.navbar-nav .nav-items:hover {
+  border-bottom-color: rgba(
+    20,
+    184,
+    144,
+    1
+  ); /* Цвет подчеркивания при наведении */
+  cursor: pointer;
+  color: rgba(20, 184, 144, 1);
+}
+
+.navbar-nav .nav-item a:hover {
+  color: rgba(20, 184, 144, 1); /* Цвет текста при наведении */
+}
+
+.navbar-nav .nav-item.active a {
+  color: rgba(20, 184, 144, 1);
+  border-bottom-color: rgba(20, 184, 144, 1);
+}

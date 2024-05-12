@@ -27,18 +27,18 @@ function getCSRFToken() {
 
 
 // форма 
-$(document).ready(function() {
+$(document).ready(function () {
     // Обработка отправки формы
-    $("#RegisterForm").on("submit", function(e) {
+    $("#RegisterForm").on("submit", function (e) {
         e.preventDefault();
-        
+
         // Сброс состояния валидации
         let form = this;
         let isValid = true;
         $(form).addClass('was-validated');
 
         // Проверка каждого поля формы
-        $(form).find('input[required]').each(function() {
+        $(form).find('input[required]').each(function () {
             if (!this.checkValidity()) {
                 isValid = false;
                 $(this).addClass('is-invalid').removeClass('is-valid');
@@ -65,7 +65,7 @@ $(document).ready(function() {
     });
 
     // Обработка снятия фокуса с полей
-    $('input[required]').on('blur', function() {
+    $('input[required]').on('blur', function () {
         if (!this.checkValidity()) {
             $(this).addClass('is-invalid').removeClass('is-valid');
         } else {
@@ -74,9 +74,9 @@ $(document).ready(function() {
     });
 
     // Активация кнопки только при заполнении всех полей
-    $('input').on('input', function() {
+    $('input').on('input', function () {
         let allFilled = true;
-        $('#RegisterForm').find('input[required]').each(function() {
+        $('#RegisterForm').find('input[required]').each(function () {
             if ($(this).val() === '') {
                 allFilled = false;
             }
@@ -89,3 +89,19 @@ $(document).ready(function() {
         }
     });
 });
+
+
+// форма
+
+document.addEventListener("DOMContentLoaded", function () {
+    var showModalLinks = document.querySelectorAll('.show-registration-modal');
+
+    showModalLinks.forEach(function (link) {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+            var modal = new bootstrap.Modal(document.getElementById('registrationModal'));
+            modal.show();
+        });
+    });
+});
+
