@@ -4,7 +4,7 @@ from django.shortcuts import render,HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from blog.models import User
-from blog.forms import UserLoginForm
+from blog.forms import UserLoginForm,UserRegistrationForm
 
 
 def home(request):
@@ -29,8 +29,15 @@ def login(request):
 
 
 def register(request):
-    pass
-
+    if request.method == 'POST':
+        form = UserRegistrationForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('home'))
+    else:
+        form = UserRegistrationForm()
+    context = {'form': form}
+    return render(request, 'blog/register.html', context)
 
 
 @csrf_exempt  # Use this decorator to exempt this view from CSRF verification

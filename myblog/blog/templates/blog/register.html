@@ -1,12 +1,52 @@
-{% extends 'base.html' %}
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'blog/css/register.css' %}">
+{% endblock %}
+
+
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Регистрация</h2>
-    <form method="post" action="{% url 'register' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-    </form>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Регистрация</h5>
+                        <form method="post" action="{% url 'register' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+
+                                <label for="{{ form.username.id_for_label }}" class="form-label">Имя
+                                    пользователя</label>
+                                {{ form.username }}
+                            </div>
+                            <div class="mb-3">
+
+                                <label for="{{ form.email.id_for_label }}" class="form-label">Введите вашу эл.
+                                    почту</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="mb-3">
+
+                                <label for="{{ form.password1.id_for_label }}" class="form-label">Пароль</label>
+                                {{ form.password1 }}
+                            </div>
+                            <div class="mb-3">
+
+                                <label for="{{ form.password2.id_for_label }}" class="form-label">Повторите
+                                    пароль</label>
+                                {{ form.password2 }}
+                            </div>
+                            <button type="submit" class="btn btn-entrance-login">Зарегистироваться</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 {% endblock %}

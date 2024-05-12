@@ -1,6 +1,6 @@
 /* Стиль для заголовка и кнопок */
 .content-wrapper {
-  background-color: #e0f7fa; /* Замените на желаемый цвет фона */
+  /* Замените на желаемый цвет фона */
   padding: 20px;
   border-radius: 10px;
 }

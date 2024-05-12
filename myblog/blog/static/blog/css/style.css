@@ -1,10 +1,7 @@
 /* Стиль для заголовка и кнопок */
-.content-wrapper {
-  background-color: #e0f7fa; /* Замените на желаемый цвет фона */
-  
-  border-radius: 10px;
+body{
+  background-color: #e0f7fa; 
 }
-
 .font {
   font-family: Andale Mono, monospace;
   font-size: 25px;
