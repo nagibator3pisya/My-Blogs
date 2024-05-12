@@ -1,0 +1,39 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'blog/css/login.css' %}">
+{% endblock %}
+
+
+
+{% block content %}
+<div class="container-fluid">
+    <div class="container">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Вход</h5>
+                        <form method="post" action="{% url 'login' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                {{ form.username.errors }}
+                                <label for="{{ form.username.id_for_label }}" class="form-label">Имя
+                                    пользователя</label>
+                                {{ form.username }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.password.errors }}
+                                <label for="{{ form.password.id_for_label }}" class="form-label">Пароль</label>
+                                {{ form.password }}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Войти</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

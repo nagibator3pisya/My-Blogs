@@ -1,0 +1,15 @@
+.flex-fill,.content-wrapper ,.about-me-wrapper{
+    background-color: rgb(255, 255, 255) !important;
+   
+}
+
+.card{
+
+}
+
+.card-body .card-title{
+    text-align: center;
+}
+.card-title{
+    font-size: 40px;
+}
