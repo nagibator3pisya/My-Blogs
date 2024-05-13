@@ -1,0 +1,16 @@
+.btn-save {
+  background-color: rgb(17, 152, 118);
+  color: rgb(255, 255, 255);
+  border: 1px solid rgba(90, 89, 89, 0.255);
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s; /* Анимация за 0.3 секунды */
+}
+.btn-save:hover {
+  background-color: rgba(20, 184, 144, 1);
+  border-color: rgb(15, 218, 35);
+  color: rgba(255, 255, 255, 1);
+}
+.btn-save:active {
+  background-color: rgb(17, 116, 91);
+  border-color: rgb(15, 218, 35);
+  color: rgba(255, 255, 255, 1);
+}
