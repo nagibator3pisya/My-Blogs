@@ -28,7 +28,8 @@
                 </ul>
                 <!-- Отображение элементов для аутентифицированного пользователя -->
                 <div class="ms-auto d-flex align-items-center">
-                    <img src="{% static 'blog/image/default_avatar.png' %}" alt="Avatar" class="avatar me-2">
+                    <img src="{% if user.image %}{{ user.image.url }}{% else %}
+							{% static 'blog/image/nouname.png' %}{% endif %}" class="rounded-circle z-depth-0 p-1 photo-nav" width="50">
                     <div class="dropdown">
                         <button class="btn btn-nav dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             <span class="username me-2">{{ user.username }}</span>

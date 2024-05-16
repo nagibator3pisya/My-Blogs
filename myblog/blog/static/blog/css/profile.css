@@ -14,3 +14,8 @@
   border-color: rgb(15, 218, 35);
   color: rgba(255, 255, 255, 1);
 }
+.photo_profile{
+  border-radius: 50%;
+  width: 110px;
+  height: 110px;
+}

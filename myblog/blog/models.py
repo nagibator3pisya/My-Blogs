@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+
 from django.db import models
 
 class Post(models.Model):
@@ -11,5 +12,6 @@ class Post(models.Model):
         return self.title
 
 
-class User(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
+class User(AbstractUser):
+    image = models.ImageField(upload_to='user_images', blank=True, null=False)
+

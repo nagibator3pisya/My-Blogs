@@ -6,8 +6,6 @@ from django.shortcuts import render, HttpResponseRedirect, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from django.views.generic import TemplateView
-
-from blog.models import User
 from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 
 
@@ -49,9 +47,10 @@ def register(request):
     return render(request, 'blog/register.html', context)
 
 
+
 def profile(request):
     if request.method == 'POST':
-        form = UserProfileForm(instance=request.user, data=request.POST, files=request.FILES)
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('profile'))
@@ -64,7 +63,7 @@ def profile(request):
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
-    template_name = 'blog/user/profile.html'
+    template_name = 'user/profile.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
