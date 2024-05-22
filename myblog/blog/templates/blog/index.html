@@ -17,6 +17,18 @@
     {% else %}
 <div class="container mt-4">
     <div class="row g-2">
+        {% if messages %}
+            {% for message in messages %}
+
+                {% if message.extra_tags == 'alert-success' %}
+
+
+                    <div class="alert alert-success" role="alert">
+                        {{message}}
+                    </div>
+                 {% endif %}
+             {% endfor %}
+        {% endif %}
         <div class="col-xxl-3">
             <div class="card h-100">
                 <div class="card-body">
@@ -79,6 +91,14 @@
         </div>
     </div>
 </div>
+
+
+
+
     {% endif %}
+
+
+
+
 {% endblock %}
 

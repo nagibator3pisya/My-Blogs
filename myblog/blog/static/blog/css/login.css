@@ -29,3 +29,20 @@
   background-color: rgb(17, 116, 91) !important;
   color: rgba(255, 255, 255, 1) !important;
 }
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-footer .btn-link {
+  padding: 5px 2px;
+  color: inherit; /* Убирает синий цвет */
+  text-decoration: none; /* Убирает подчеркивание */
+ 
+  
+}
+.form-footer .btn-link:hover {
+  color: inherit; /* Убирает синий цвет при наведении */
+ 
+}

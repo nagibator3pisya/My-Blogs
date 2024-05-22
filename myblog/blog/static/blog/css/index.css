@@ -46,7 +46,7 @@
 
 .btn-go:hover {
   background-color: rgba(20, 184, 144, 1);
-  border-color: rgb(15, 218, 35);
+  color: rgb(0, 0, 0);
   color: rgba(255, 255, 255, 1) !important;
 }
 
@@ -54,6 +54,21 @@
   background-color: rgb(17, 116, 91) !important;
   color: rgba(255, 255, 255, 1) !important;
 }
+a {
+  text-decoration: none;
+}
+.login_password{
+  color: rgb(0, 0, 0);
+}
+.login_password:hover{
+  border-bottom: 3px solid rgba(20, 184, 144, 1) ;
+
+  transition: border-color 0.5s, /* Анимация за 0.3 секунды */
+
+}
+
+
+
 
 
 .rounded {

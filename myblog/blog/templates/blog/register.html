@@ -4,8 +4,6 @@
 <link rel="stylesheet" href="{% static 'blog/css/register.css' %}">
 {% endblock %}
 
-
-
 {% block content %}
 <div class="container-fluid">
     <div class="container">
@@ -14,53 +12,69 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Регистрация</h5>
-                        <form method="post" action="{% url 'register' %}">
+                        <form method="post" action="{% url 'register' %}" novalidate>
                             {% csrf_token %}
-                            <div class="mb-3">
 
-                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Имя
-                                </label>
+                            <div class="mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Имя</label>
                                 {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger">
+                                        {{ form.last_name.errors }}
+                                    </div>
+                                {% endif %}
                             </div>
                             <div class="mb-3">
-
-                                <label for="{{ form.first_name.id_for_label }}" class="form-label">Фамилия
-                                </label>
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">Фамилия</label>
                                 {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger">
+                                        {{ form.first_name.errors }}
+                                    </div>
+                                {% endif %}
                             </div>
-                              <div class="mb-3">
-
-                                <label for="{{ form.username.id_for_label }}" class="form-label">Логин
-                                </label>
+                            <div class="mb-3">
+                                <label for="{{ form.username.id_for_label }}" class="form-label">Логин</label>
                                 {{ form.username }}
+                                {% if form.username.errors %}
+                                    <div class="text-danger">
+                                        {{ form.username.errors }}
+                                    </div>
+                                {% endif %}
                             </div>
-
-
                             <div class="mb-3">
-
-                                <label for="{{ form.email.id_for_label }}" class="form-label">Введите вашу эл.
-                                    почту</label>
+                                <label for="{{ form.email.id_for_label }}" class="form-label">Введите вашу эл. почту</label>
                                 {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger">
+                                        {{ form.email.errors }}
+                                    </div>
+                                {% endif %}
                             </div>
                             <div class="mb-3">
-
                                 <label for="{{ form.password1.id_for_label }}" class="form-label">Пароль</label>
                                 {{ form.password1 }}
+                                {% if form.password1.errors %}
+                                    <div class="text-danger">
+                                        {{ form.password1.errors }}
+                                    </div>
+                                {% endif %}
                             </div>
                             <div class="mb-3">
-
-                                <label for="{{ form.password2.id_for_label }}" class="form-label">Повторите
-                                    пароль</label>
+                                <label for="{{ form.password2.id_for_label }}" class="form-label">Повторите пароль</label>
                                 {{ form.password2 }}
+                                {% if form.password2.errors %}
+                                    <div class="text-danger">
+                                        {{ form.password2.errors }}
+                                    </div>
+                                {% endif %}
                             </div>
                             <button type="submit" class="btn btn-entrance-login">Зарегистироваться</button>
                         </form>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}

@@ -1,13 +1,22 @@
-from django.contrib import auth
-from django.contrib.auth import logout
+from django.contrib import auth, messages
+from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, PasswordChangeView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponseRedirect, redirect
+from django.template.context_processors import request
+from django.utils import timezone
+from django.utils.http import urlsafe_base64_decode
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView
-from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
-
+from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserForgotPasswordForm, \
+    UserSetNewPasswordForm
+from django.contrib.auth import authenticate, login as auth_login
+User = get_user_model()
 
 def home(request):
     context = {'title': 'Мой блог'}
@@ -39,14 +48,13 @@ def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(data=request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            auth_login(request, user)
             return HttpResponseRedirect(reverse('home'))
     else:
         form = UserRegistrationForm()
     context = {'form': form, 'title': 'Регистрация'}
     return render(request, 'blog/register.html', context)
-
-
 
 def profile(request):
     if request.method == 'POST':
@@ -73,6 +81,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
 
 
+
 @csrf_exempt  # Use this decorator to exempt this view from CSRF verification
 def accept_cookies(request):
     if request.method == 'POST':
@@ -81,3 +90,45 @@ def accept_cookies(request):
         response.set_cookie('cookie_consent', 'true')  # Example cookie setting
         return response
     return JsonResponse({"status": "error"}, status=400)
+
+
+class UserForgotPasswordView(SuccessMessageMixin, PasswordResetView):
+    """
+    Представление по сбросу пароля по почте
+    """
+    form_class = UserForgotPasswordForm
+    template_name = 'blog/email_v2/password_reset.html'
+
+
+    subject_template_name = 'blog/email_v2/password_subject_reset_mail.txt'
+    email_template_name = 'blog/email_v2/password_reset_mail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Запрос на восстановление пароля'
+        return context
+
+
+
+class UserPasswordResetConfirmView(SuccessMessageMixin, PasswordResetConfirmView):
+    """
+    Представление установки нового пароля
+    """
+    form_class = UserSetNewPasswordForm
+    template_name = 'blog/email_v2/password_set_new.html'
+
+    success_url = reverse_lazy('home')
+    success_message = 'Пароль успешно изменен. Можете авторизоваться на сайте.'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Установить новый пароль'
+        return context
+
+    def get_success_message(self, cleaned_data):
+        # Используем self.request вместо request
+        return messages.success(self.request, self.success_message, extra_tags='alert-success')
+
+
+
+

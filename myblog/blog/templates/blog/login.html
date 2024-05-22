@@ -4,29 +4,43 @@
 <link rel="stylesheet" href="{% static 'blog/css/login.css' %}">
 {% endblock %}
 
-
 {% block content %}
-
 <div class="container-fluid">
     <div class="container">
         <div class="row justify-content-center align-items-center h-100">
             <div class="col-md-6 col-lg-4">
-                <div class="card">
-                    <div class="card-body">
+                <div class="card ">
+                    <div class="card-body ">
                         <h5 class="card-title">Вход</h5>
-                        <form method="post" action="{% url 'login' %}">
+                        <form method="post" action="{% url 'login' %}" novalidate>
                             {% csrf_token %}
                             <div class="mb-3">
-                                {{ form.username.errors }}
                                 <label for="{{ form.username.id_for_label }}" class="form-label">Логин</label>
                                 {{ form.username }}
+                                {% if form.username.errors %}
+                                    <div class="text-danger">
+                                        {{ form.username.errors }}
+                                    </div>
+                                {% endif %}
                             </div>
                             <div class="mb-3">
-                                {{ form.password.errors }}
                                 <label for="{{ form.password.id_for_label }}" class="form-label">Пароль</label>
                                 {{ form.password }}
+                                {% if form.password.errors %}
+                                    <div class="text-danger">
+                                        {{ form.password.errors }}
+                                    </div>
+                                {% endif %}
                             </div>
-                            <button type="submit" class="btn btn-entrance-login">Войти</button>
+                            <div class="form-footer">
+                                <button type="submit" class="btn btn-entrance-login">Войти</button>
+                                <a href="{% url 'password_reset' %}" class="btn btn-link">Забыли пароль?</a>
+                            </div>
+                            {% if form.non_field_errors %}
+                                <div class="text-danger mt-3">
+                                    {{ form.non_field_errors }}
+                                </div>
+                            {% endif %}
                         </form>
                     </div>
                 </div>
@@ -34,5 +48,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}

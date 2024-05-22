@@ -1,3 +1,5 @@
+
+
 document.getElementById('accept-cookies').addEventListener('click', function () {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/accept-cookies/');
@@ -104,4 +106,17 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Проверяем, существует ли сообщение об успешной смене пароля в localStorage
+        var successMessage = localStorage.getItem('success_password_change');
+        if (successMessage) {
+            // Показываем модальное окно
+            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+            // Удаляем сообщение об успешной смене пароля из localStorage
+            localStorage.removeItem('success_password_change');
+        }
+    });
 
