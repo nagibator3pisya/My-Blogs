@@ -2,6 +2,32 @@
   border: none;
 }
 
+.btn-nav-bell,
+.btn-nav-bell::after{
+  border: none;
+}
+.drop{
+  left: 50% !important;
+  transform: translateX(-50%);
+}
+
+.btn-crete-blog {
+  background-color: rgb(255, 250, 250);
+  color: rgb(0, 0, 0);
+  border: 1px solid rgba(90, 89, 89, 0.255);
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s; /* Анимация за 0.3 секунды */
+}
+.btn-crete-blog:hover {
+  background-color: rgba(20, 184, 144, 1);
+  border-color: rgb(15, 218, 35);
+  color: rgba(255, 255, 255, 1) !important;
+}
+.btn-crete-blog:active {
+  background-color: rgb(17, 116, 91) !important;
+  color: rgba(255, 255, 255, 1) !important;
+}
+
+
 .nav-item:hover {
   border-bottom-color: rgba(20, 184, 144, 1);
   cursor: default;

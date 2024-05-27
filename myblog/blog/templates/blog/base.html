@@ -22,7 +22,9 @@
 
     <main class="flex-fill ">
         <div class="content-wrapper py-4">
-            {% block content %}{% endblock %}
+            {% block content %}
+                 {% block category_tree %}{% endblock %}
+            {% endblock %}
 
         </div>
     </main>

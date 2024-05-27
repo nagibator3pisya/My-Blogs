@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'blog'
+    'blog',
+    'mptt',
+    'django.contrib.humanize',
 ]
 SITE_ID = 1
 

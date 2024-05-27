@@ -1,0 +1,13 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'blog/css/blog.css' %}">
+{% endblock %}
+
+{% block content %}
+    <strong>{{ article.title }}</strong>
+        <p>{{ article.full_description }}</p>
+        <small>{{ article.time_create }}</small>
+        <hr>
+        <span>{{ article.category.title }}</span>
+{%endblock%}

@@ -178,3 +178,6 @@ class UserSetNewPasswordForm(SetPasswordForm):
                 'class': 'form-control',
                 
             })
+
+
+

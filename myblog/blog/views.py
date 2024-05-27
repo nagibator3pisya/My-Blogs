@@ -1,21 +1,19 @@
 from django.contrib import auth, messages
 from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, PasswordChangeView
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponseRedirect, redirect
-from django.template.context_processors import request
-from django.utils import timezone
-from django.utils.http import urlsafe_base64_decode
-from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView, DetailView
 from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserForgotPasswordForm, \
     UserSetNewPasswordForm
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import login as auth_login
+
+from blog.models import Article, Category
+
 User = get_user_model()
 
 def home(request):
@@ -37,7 +35,7 @@ def login(request):
             user = auth.authenticate(username=username, password=password)
             if user:
                 auth.login(request, user)
-                return HttpResponseRedirect(reverse('home'))
+                return HttpResponseRedirect(reverse('blog'))
     else:
         form = UserLoginForm()
     context = {'form': form, 'title': 'Вход'}
@@ -50,11 +48,17 @@ def register(request):
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            return HttpResponseRedirect(reverse('home'))
+            return HttpResponseRedirect(reverse('blog'))
     else:
         form = UserRegistrationForm()
     context = {'form': form, 'title': 'Регистрация'}
     return render(request, 'blog/register.html', context)
+
+
+def blog(request):
+    context = {'title': 'Новостной блог'}
+    return render(request, 'blog/blog.html', context)
+
 
 def profile(request):
     if request.method == 'POST':
@@ -120,6 +124,7 @@ class UserPasswordResetConfirmView(SuccessMessageMixin, PasswordResetConfirmView
     success_url = reverse_lazy('home')
     success_message = 'Пароль успешно изменен. Можете авторизоваться на сайте.'
 
+    #TODO НЕ МОГУ СДЕЛАТЬ ОШИБКУ О ТОМ ЧТО ССЫЛКА НЕ АКТИВНА Верификация
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Установить новый пароль'
@@ -129,6 +134,33 @@ class UserPasswordResetConfirmView(SuccessMessageMixin, PasswordResetConfirmView
         # Используем self.request вместо request
         return messages.success(self.request, self.success_message, extra_tags='alert-success')
 
+# категории
+class ArticleByCategoryListView(ListView):
+    model = Article
+    template_name = 'blog/blog.html'
+    context_object_name = 'articles'
+    category = None
+
+    def get_queryset(self):
+        self.category = Category.objects.get(slug=self.kwargs['slug'])
+        queryset = Article.objects.all().filter(category__slug=self.category.slug)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Статьи из категории: {self.category.title}'
+        return context
 
 
 
+# просмотр подробнее поста
+
+class ArticleDetailView(DetailView):
+    model = Article
+    template_name = 'blog/articles_detail.html'
+    context_object_name = 'article'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.title
+        return context

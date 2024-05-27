@@ -1,73 +1,89 @@
 {% load static %}
 {% block extra_styles %}
 <link rel="stylesheet" href="{% static 'blog/css/nav_menu.css' %}">
-<link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
+<!-- <link rel="stylesheet" href="{% static 'blog/css/style.css' %}"> -->
 {% endblock %}
 
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            
-                <span class="navbar-brand ">
-                    <i class="bi bi-journal-text"></i> Мой блог
-                </span>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-          
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                {% if user.is_authenticated %}
-                <ul class="navbar-nav me-auto mb-lg-0">
-                   
-                    <!-- Здесь добавьте свои категории или другие элементы для авторизованного пользователя -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Блог</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+
+        <span class="navbar-brand ">
+            <i class="bi bi-journal-text"></i> Мой блог
+        </span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            {% if user.is_authenticated %}
+            <ul class="navbar-nav me-auto mb-lg-0">
+
+                <!-- Здесь добавьте свои категории или другие элементы для авторизованного пользователя -->
+                      <li class="nav-item">
+                        <a class="nav-link" href="{%url 'blog'%}">Блог</a>
                     </li>
-                 
-                </ul>
-                <!-- Отображение элементов для аутентифицированного пользователя -->
-                <div class="ms-auto d-flex align-items-center">
-                    <img src="{% if user.image %}{{ user.image.url }}{% else %}
-							{% static 'blog/image/nouname.png' %}{% endif %}" class="rounded-circle z-depth-0 p-1 photo-nav" width="50">
-                    <div class="dropdown">
-                        <button class="btn btn-nav dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="username me-2">{{ user.username }}</span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="{% url 'profile' %}">Профиль</a></li>
-                            
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
-                        </ul>
-                    </div>
+
+
+            </ul>
+
+            <!-- Отображение элементов для аутентифицированного пользователя -->
+
+            <div class="ms-auto d-flex align-items-center">
+                <a href="№" class="btn btn-crete-blog me-3">Создать пост</a>
+                <div class="dropdown">
+                    <button class="btn btn-nav-bell dropdown-toggle" type="button" id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell"></i>
+                    </button>
+                    <ul class="dropdown-menu drop" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="#">Действие</a></li>
+                        <li><a class="dropdown-item" href="#">Другое действие</a></li>
+                        <li><a class="dropdown-item" href="#">Что-то еще здесь</a></li>
+                    </ul>
                 </div>
-                {% else %}
-                <!-- Отображение элементов для входа и регистрации -->
-                
-                <ul class="navbar-nav  me-auto  mb-lg-0">
-                    <li class="nav-item p-0 m-0">
-                        <a class="nav-link active" aria-current="page" href="#">Главная</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link show-registration-modal" href="#" data-bs-toggle="modal"
-                            data-bs-target="#registrationModal">Тот самый блог</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    <!-- Ссылка для перехода на страницу входа -->
-                    <li class="nav-item">
-                        <a class="btn btn-entrance me-2" href="{% url 'login' %}">Вход</a>
-                    </li>
-                    <!-- Ссылка для перехода на страницу регистрации -->
-                    <li class="nav-item">
-                        <a class="btn btn-registration" href="{% url 'register' %}">Регистрация</a>
-                    </li>
-                </ul>
-                
-                {% endif %}
+                <img src="{% if user.image %}{{ user.image.url }}{% else %}
+							{% static 'blog/image/nouname.png' %}{% endif %}" class="rounded-circle z-depth-0 p-1 photo-nav" width="50">
+                <div class="dropdown">
+                    <button class="btn btn-nav dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="username me-2">{{ user.username }}</span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="{% url 'profile' %}">Профиль</a></li>
+
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
+                    </ul>
+                </div>
             </div>
+            {% else %}
+            <!-- Отображение элементов для входа и регистрации -->
+
+            <ul class="navbar-nav  me-auto  mb-lg-0">
+                <li class="nav-item p-0 m-0">
+                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link show-registration-modal" href="#" data-bs-toggle="modal"
+                        data-bs-target="#registrationModal">Тот самый блог</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <!-- Ссылка для перехода на страницу входа -->
+                <li class="nav-item">
+                    <a class="btn btn-entrance me-2" href="{% url 'login' %}">Вход</a>
+                </li>
+                <!-- Ссылка для перехода на страницу регистрации -->
+                <li class="nav-item">
+                    <a class="btn btn-registration" href="{% url 'register' %}">Регистрация</a>
+                </li>
+            </ul>
+
+            {% endif %}
         </div>
-    </nav>
+    </div>
+</nav>
 
 
 

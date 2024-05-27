@@ -8,13 +8,7 @@
 
 
 {% block content %}
-    {% if user.is_authenticated %}
-        <!-- Контент для авторизованного пользователя -->
-        <div class="container mt-4">
-            <!-- Здесь ваш контент для авторизованного пользователя -->
-            <p>ghb</p>
-        </div>
-    {% else %}
+
 <div class="container mt-4">
     <div class="row g-2">
         {% if messages %}
@@ -94,8 +88,6 @@
 
 
 
-
-    {% endif %}
 
 
 
