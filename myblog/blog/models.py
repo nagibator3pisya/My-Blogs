@@ -1,9 +1,12 @@
-from django.contrib.auth import get_user_model
+
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import FileExtensionValidator
+from django.template.defaultfilters import slugify
 from django.urls import reverse
 from mptt.models import MPTTModel, TreeForeignKey
 from django.db import models
+
+from blog.modules.services.utils import unique_slugify
 
 
 class User(AbstractUser):
@@ -50,6 +53,16 @@ class Article(models.Model):
 
     def get_absolute_url(self):
         return reverse('articles_detail', kwargs={'slug': self.slug})
+
+    def save(self, *args, **kwargs):
+        """
+        Сохранение полей модели при их отсутствии заполнения
+        """
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+
 
 
 class Category(MPTTModel):

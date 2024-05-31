@@ -51,13 +51,7 @@
                                         </div>
                                     </div>
                                     <p class="card-text m-2">{{ article.short_description }}</p>
-
-
-
-
-                                   
-                                    
-                                    <a href="{% url 'articles_by_category' article.category.slug %}"
+                                 <a href="{% url 'articles_by_category' article.category.slug %}"
                                         class="btn btn-primary">{{ article.category.title }}</a>
                                     <a href="{{ article.get_absolute_url }}" class="btn btn-secondary">Подробнее</a>
                                 </div>

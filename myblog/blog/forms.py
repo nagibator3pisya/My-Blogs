@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, User
     SetPasswordForm
 from django.core.exceptions import ValidationError
 
-from blog.models import User
+from blog.models import User, Article, Category
 
 
 class UserLoginForm(AuthenticationForm):
@@ -40,7 +40,7 @@ class UserRegistrationForm(UserCreationForm):
                                                              'placeholder': 'Фамилия пользователя'}))
     username = forms.CharField(max_length=20,min_length=5,widget=forms.TextInput(attrs={'class': 'form-control',
                                                              'placeholder': 'Логин'}))
-    email = forms.CharField(max_length=20,min_length=5,widget=forms.EmailInput(attrs={'class': 'form-control',
+    email = forms.CharField(max_length=50,min_length=5,widget=forms.EmailInput(attrs={'class': 'form-control',
                                                            'placeholder': 'Введите адрес эл. почты'}))
     password1 = forms.CharField(max_length=20,min_length=8,widget=forms.PasswordInput(attrs={'class': 'form-control',
                                                                   'placeholder': 'Пароль'}))
@@ -124,15 +124,6 @@ class UserProfileForm(UserChangeForm):
         model = User
         fields = ('last_name','first_name', 'username','email', 'image')
 
-# восстановление пароля
-
-
-# class PasswordResetForm(forms.Form):
-#     email = forms.CharField(
-#         max_length=20,
-#         min_length=5,
-#         widget=forms.EmailInput(attrs={'class': 'form-label', 'placeholder': 'Введите адрес эл. почты'})
-#     )
 
 
 class UserForgotPasswordForm(PasswordResetForm):
@@ -180,4 +171,39 @@ class UserSetNewPasswordForm(SetPasswordForm):
             })
 
 
+
+class ArticleCreateForm(forms.ModelForm):
+    """
+    Форма добавления статей на сайте
+    """
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    category = forms.ModelChoiceField(
+        queryset=Category.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=True,
+        error_messages={'required': 'Пожалуйста, выберите категорию.'}
+    )
+    short_description = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'form-control'}),
+        required=True,
+        error_messages={'required': 'Пожалуйста, введите краткое описание.'}
+    )
+    full_description = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'form-control'}),
+        required=True,
+        error_messages={'required': 'Пожалуйста, введите полное описание.'}
+    )
+    thumbnail = forms.ImageField(
+        widget=forms.FileInput(attrs={'class': 'form-control'}),
+        required=False
+    )
+    status = forms.ChoiceField(
+        choices=Article.STATUS_OPTIONS,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=True,
+        error_messages={'required': 'Пожалуйста, выберите статус статьи.'}
+    )
+    class Meta:
+        model = Article
+        fields = ('title', 'category', 'short_description', 'full_description', 'thumbnail', 'status')
 

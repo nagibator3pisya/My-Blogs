@@ -1,24 +1,29 @@
 from django.contrib import auth, messages
 from django.contrib.auth import logout, get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
-from django.shortcuts import render, HttpResponseRedirect, redirect
+from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import TemplateView, ListView, DetailView, CreateView
 from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserForgotPasswordForm, \
-    UserSetNewPasswordForm
+    UserSetNewPasswordForm,  ArticleCreateForm
 from django.contrib.auth import login as auth_login
 
 from blog.models import Article, Category
 
 User = get_user_model()
 
+
 def home(request):
+    if request.user.is_authenticated:
+        return redirect('blog')
     context = {'title': 'Мой блог'}
     return render(request, 'blog/index.html', context)
+
 
 
 def logout_view(request):
@@ -164,3 +169,56 @@ class ArticleDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.title
         return context
+
+
+# создание статьи
+# def create_article(request):
+#     if request.method == 'POST':
+#         form = ArticleForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             article = form.save(commit=False)
+#             article.author = request.user
+#             article.save()
+#             messages.success(request, 'Статья успешно создана!')
+#             return redirect('article_detail', slug=article.slug)
+#         else:
+#             messages.error(request, 'Пожалуйста, исправьте ошибки в форме.')
+#     else:
+#         form = ArticleForm()
+#
+#     context = {'form': form, 'title': 'Создать статью'}
+#     return render(request, 'blog/create_article/create_article.html', context)
+
+
+
+class ArticleCreateView(CreateView):
+    """
+    Представление: создание материалов на сайте
+    """
+    model = Article
+    template_name = 'blog/create_article/create_article.html'
+    form_class = ArticleCreateForm
+    success_url = reverse_lazy('blog')
+    success_message = 'Пожалуйста, исправьте ошибки в форме.'
+
+    def form_valid(self, form):
+        if 'cancel' in self.request.POST:
+            article = form.save(commit=False)
+            article.status = 'draft'
+            article.save()
+            return redirect('articles_detail', slug=article.slug)
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Добавление статьи на сайт'
+        return context
+
+
+
+@login_required
+def cancel_article(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    article.status = 'draft'
+    article.save()
+    return redirect('blog', slug=article.slug)
