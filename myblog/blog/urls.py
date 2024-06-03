@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from django.urls import path
 from . import views
 from .views import accept_cookies, logout_view, profile, UserForgotPasswordView, UserPasswordResetConfirmView, \
-    ArticleByCategoryListView, ArticleDetailView, ArticleCreateView, cancel_article
+    ArticleByCategoryListView, ArticleDetailView, ArticleCreateView
 
 from django.contrib.auth import views as auth_views
 
@@ -26,7 +26,7 @@ urlpatterns = [
     path('category/<str:slug>/', ArticleByCategoryListView.as_view(), name="articles_by_category"),
     path('articles/<str:slug>/', ArticleDetailView.as_view(), name='articles_detail'),
     path('articles/', ArticleCreateView.as_view(), name='articles_create'),
-    path('articles/cancel/<int:pk>/', cancel_article, name='cancel_article'),
+
 ]
 
 if settings.DEBUG:

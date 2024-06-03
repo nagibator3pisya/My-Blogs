@@ -59,7 +59,7 @@ class Article(models.Model):
         Сохранение полей модели при их отсутствии заполнения
         """
         if not self.slug:
-            self.slug = slugify(self.title)
+            self.slug = unique_slugify(self, self.title)
         super().save(*args, **kwargs)
 
 
@@ -104,4 +104,4 @@ class Category(MPTTModel):
         return self.title
 
     def get_absolute_url(self):
-        return  reverse('articles_by_category', kwargs={'slug': self.slug})
+        return reverse('articles_by_category', kwargs={'slug': self.slug})

@@ -139,7 +139,9 @@ class UserPasswordResetConfirmView(SuccessMessageMixin, PasswordResetConfirmView
         # Используем self.request вместо request
         return messages.success(self.request, self.success_message, extra_tags='alert-success')
 
-# категории
+
+
+
 class ArticleByCategoryListView(ListView):
     model = Article
     template_name = 'blog/blog.html'
@@ -157,8 +159,9 @@ class ArticleByCategoryListView(ListView):
         return context
 
 
-
 # просмотр подробнее поста
+
+
 
 class ArticleDetailView(DetailView):
     model = Article
@@ -169,25 +172,6 @@ class ArticleDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.title
         return context
-
-
-# создание статьи
-# def create_article(request):
-#     if request.method == 'POST':
-#         form = ArticleForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             article = form.save(commit=False)
-#             article.author = request.user
-#             article.save()
-#             messages.success(request, 'Статья успешно создана!')
-#             return redirect('article_detail', slug=article.slug)
-#         else:
-#             messages.error(request, 'Пожалуйста, исправьте ошибки в форме.')
-#     else:
-#         form = ArticleForm()
-#
-#     context = {'form': form, 'title': 'Создать статью'}
-#     return render(request, 'blog/create_article/create_article.html', context)
 
 
 
@@ -201,13 +185,7 @@ class ArticleCreateView(CreateView):
     success_url = reverse_lazy('blog')
     success_message = 'Пожалуйста, исправьте ошибки в форме.'
 
-    def form_valid(self, form):
-        if 'cancel' in self.request.POST:
-            article = form.save(commit=False)
-            article.status = 'draft'
-            article.save()
-            return redirect('articles_detail', slug=article.slug)
-        return super().form_valid(form)
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -215,10 +193,8 @@ class ArticleCreateView(CreateView):
         return context
 
 
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.save()
+        return super().form_valid(form)
 
-@login_required
-def cancel_article(request, pk):
-    article = get_object_or_404(Article, pk=pk)
-    article.status = 'draft'
-    article.save()
-    return redirect('blog', slug=article.slug)

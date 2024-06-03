@@ -8,59 +8,61 @@
 {% block content %}
 <div class="container-fluid">
     <div class="container">
-
         <div class="row">
             <div class="col-lg-3">
                 <div class="content-wrapper py-4">
                     {% block category_tree %}
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Категории</h5>
-                            {% full_tree_for_model blog.Category as categories %}
-                            <p class="card-text">
-                            <ul>
-                                {% recursetree categories %}
-                                <li>
-                                    <a href="{{ node.get_absolute_url }}">{{ node.title }}</a>
-                                </li>
-                                {% if not node.is_leaf_node %}<ul>{% endif %}
-                                    {{ children }}
-                                    {% if not node.is_leaf_node %}</ul>{% endif %}
-                                {% endrecursetree %}
-                            </ul>
-                            </p>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Категории</h5>
+                                {% full_tree_for_model blog.Category as categories %}
+                                <p class="card-text">
+                                    <ul>
+                                        {% recursetree categories %}
+                                            <li>
+                                                {% if node.slug %}
+                                                    <a href="{{ node.get_absolute_url }}">{{ node.title }}</a>
+                                                {% else %}
+                                                    {{ node.title }}
+                                                {% endif %}
+                                            </li>
+                                            {% if not node.is_leaf_node %}<ul>{% endif %}
+                                                {{children}}
+                                            {% if not node.is_leaf_node %}</ul>{% endif %}
+                                        {% endrecursetree %}
+                                    </ul>
+                                </p>
+                            </div>
                         </div>
-                    </div>
                     {% endblock %}
                 </div>
             </div>
-            <div class="col-lg-9 col-xxl-5  ">
+            <div class="col-lg-9 col-xxl-5">
                 <div class="content-wrapper py-4">
                     {% if articles %}
                     {% for article in articles %}
                     <div class="card mb-3">
                         <div class="row">
-                          
                             <div class="col-10">
-                                <div class="card-body ">
+                                <div class="card-body">
                                     <div class="d-flex align-items-center">
                                         <img src="{% if article.author.image %}{{ article.author.image.url }}{% else %}{% static 'blog/image/nouname.png' %}{% endif %}" class="rounded-circle z-depth-0 p-1 photo-nav" width="50">
                                         <div class="ml-3">
                                             <div>{{ article.author.username }}</div>
-                                            <div class=" card-subtitle text-muted">{{ article.time_create|naturaltime }}</div>
+                                            <div class="card-subtitle text-muted">{{ article.time_create|naturaltime }}</div>
                                         </div>
                                     </div>
                                     <p class="card-text m-2">{{ article.short_description }}</p>
-                                 <a href="{% url 'articles_by_category' article.category.slug %}"
-                                        class="btn btn-primary">{{ article.category.title }}</a>
+                                    <a href="{% url 'articles_by_category' article.category.slug %}" class="btn btn-primary">{{ article.category.title }}</a>
                                     <a href="{{ article.get_absolute_url }}" class="btn btn-secondary">Подробнее</a>
+<!--                                    -->
                                 </div>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
                     {% else %}
-                    {%include 'include/not_found_post.html'%}
+                    {% include 'include/not_found_post.html' %}
                     {% endif %}
                 </div>
             </div>

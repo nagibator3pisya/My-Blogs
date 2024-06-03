@@ -57,20 +57,19 @@
             {% endif %}
         </div>
 
-<!--        <div class="mb-3">-->
-<!--            <label for="{{ form.status.id_for_label }}" class="form-label">Cтатус</label>-->
-<!--            {{ form.status }}-->
-<!--            {% if form.status.errors %}-->
-<!--                <div class="text-danger">-->
-<!--                    {{ form.status.errors }}-->
-<!--                </div>-->
-<!--            {% endif %}-->
-<!--        </div>-->
+        <div class="mb-3">
+            <label for="{{ form.status.id_for_label }}" class="form-label">Cтатус</label>
+            {{ form.status }}
+            {% if form.status.errors %}
+                <div class="text-danger">
+                    {{ form.status.errors }}
+                </div>
+            {% endif %}
+        </div>
 
         <button type="submit" class="btn btn-primary">Создать статью</button>
 
-            <button type="submit" name="cancel" formmethod="post" formaction="{% url 'cancel_article' %}">
-                Отмена</button>
+
 
     </form>
 </div>
