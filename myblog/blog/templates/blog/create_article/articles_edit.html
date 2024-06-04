@@ -61,8 +61,8 @@
         </div>
         <input type="hidden" name="status" id="statusField" value="published">
 
-        <button type="submit" class="btn create_article">Создать статью</button>
-        <button type="button" class="btn draft_article" id="cancelButton">Сохранить в черновик</button>
+        <button type="submit" class="btn create_article">Опубликовать</button>
+        <a class="btn draft_article" href="{% url 'profile' %}">Вернуться</a>
 
 
     </form>
@@ -72,6 +72,3 @@
 
 {% endblock %}
 
-{% block extra_script %}
- <script src="{% static 'blog/js/сreate_article.js' %}"></script>
-{% endblock %}

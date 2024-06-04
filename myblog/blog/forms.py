@@ -207,3 +207,38 @@ class ArticleCreateForm(forms.ModelForm):
         model = Article
         fields = ('title', 'category', 'short_description', 'full_description', 'thumbnail', 'status')
 
+
+class ArticleUpdateForm(forms.ModelForm):
+    """
+    Форма для редактирование в черновике
+    """
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    category = forms.ModelChoiceField(
+        queryset=Category.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=True,
+        error_messages={'required': 'Пожалуйста, выберите категорию.'}
+    )
+    short_description = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'form-control'}),
+        required=True,
+        error_messages={'required': 'Пожалуйста, введите краткое описание.'}
+    )
+    full_description = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'form-control'}),
+        required=True,
+        error_messages={'required': 'Пожалуйста, введите полное описание.'}
+    )
+    thumbnail = forms.ImageField(
+        widget=forms.FileInput(attrs={'class': 'form-control'}),
+        required=False
+    )
+    status = forms.ChoiceField(
+        choices=Article.STATUS_OPTIONS,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=True,
+        error_messages={'required': 'Пожалуйста, выберите статус статьи.'}
+    )
+    class Meta:
+        model = Article
+        fields = ('title', 'category', 'short_description', 'full_description', 'thumbnail', 'status')

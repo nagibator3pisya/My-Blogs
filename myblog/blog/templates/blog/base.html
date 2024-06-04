@@ -9,9 +9,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     {% load static %}
     <title>{{title}}</title>
-    {% block extra_styles %}{% endblock %}
+    
     <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
-
+    {% block extra_styles %}{% endblock %}
 </head>
 
 <body class="d-flex flex-column min-vh-100">

@@ -8,9 +8,9 @@ from django.http import JsonResponse
 from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, ListView, DetailView, CreateView
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView
 from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserForgotPasswordForm, \
-    UserSetNewPasswordForm,  ArticleCreateForm
+    UserSetNewPasswordForm, ArticleCreateForm, ArticleUpdateForm
 from django.contrib.auth import login as auth_login
 
 from blog.models import Article, Category
@@ -65,29 +65,44 @@ def blog(request):
     return render(request, 'blog/blog.html', context)
 
 
-def profile(request):
-    if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('profile'))
-        else:
-            print(form.errors)
-    else:
-        form = UserProfileForm(instance=request.user)
-    context = {'title': 'Профиль', 'form': form}
-    return render(request, 'blog/user/profile.html', context)
+# def profile(request):
+#     if request.method == 'POST':
+#         form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+#         if form.is_valid():
+#             form.save()
+#             return HttpResponseRedirect(reverse('profile'))
+#         else:
+#             print(form.errors)
+#     else:
+#         form = UserProfileForm(instance=request.user)
+#     context = {'title': 'Профиль', 'form': form}
+#     return render(request, 'blog/user/profile.html', context)
+#
+#
+# class ProfileView(TemplateView):
+#     template_name = 'user/profile.html'
+#
+#     def get_context_data(self, *kwargs):
+#         context = super().get_context_data(*kwargs)
+#         context['username'] = self.request.user.username
+#         context['first_name'] = self.request.user.first_name
+#         context['drafts'] = Article.objects.filter(author=self.request.user)
+#
+#         return context
+class ProfileView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = UserProfileForm
+    template_name = 'blog/user/profile.html'
+    success_url = reverse_lazy('profile')
 
 
-class ProfileView(LoginRequiredMixin, TemplateView):
-    template_name = 'user/profile.html'
+    def get_object(self):
+        return self.request.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['username'] = self.request.user.username
-        context['first_name'] = self.request.user.first_name
+        context['drafts'] = Article.objects.filter(author=self.request.user, status='draft')
         return context
-
 
 
 
@@ -128,16 +143,14 @@ class UserPasswordResetConfirmView(SuccessMessageMixin, PasswordResetConfirmView
 
     success_url = reverse_lazy('home')
     success_message = 'Пароль успешно изменен. Можете авторизоваться на сайте.'
-
-    #TODO НЕ МОГУ СДЕЛАТЬ ОШИБКУ О ТОМ ЧТО ССЫЛКА НЕ АКТИВНА Верификация
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Установить новый пароль'
         return context
 
-    def get_success_message(self, cleaned_data):
-        # Используем self.request вместо request
-        return messages.success(self.request, self.success_message, extra_tags='alert-success')
+    # def get_success_message(self, cleaned_data):
+    #     # Используем self.request вместо request
+    #     return messages.success(self.request, self.success_message, extra_tags='alert-success')
 
 
 
@@ -192,9 +205,29 @@ class ArticleCreateView(CreateView):
         context['title'] = 'Добавление статьи на сайт'
         return context
 
-
     def form_valid(self, form):
         form.instance.author = self.request.user
+        if form.cleaned_data.get('status') == 'draft':
+            messages.success(self.request, 'Статья сохранена как черновик.')
         form.save()
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        messages.error(self.request, 'Пожалуйста, исправьте ошибки в форме.')
+        return super().form_invalid(form)
+
+
+
+
+
+class ArticleEditView(UpdateView):
+    model = Article
+    template_name = 'blog/create_article/articles_edit.html'
+    form_class = ArticleUpdateForm
+
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Черновики'
+        return context

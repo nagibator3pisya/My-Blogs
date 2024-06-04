@@ -1,8 +1,8 @@
 
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import FileExtensionValidator
-from django.template.defaultfilters import slugify
 from django.urls import reverse
+
 from mptt.models import MPTTModel, TreeForeignKey
 from django.db import models
 
@@ -105,3 +105,5 @@ class Category(MPTTModel):
 
     def get_absolute_url(self):
         return reverse('articles_by_category', kwargs={'slug': self.slug})
+
+

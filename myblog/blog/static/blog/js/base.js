@@ -120,3 +120,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+
+
+
+    document.getElementById('cancelButton').addEventListener('click', function() {
+        // Установить значение статуса на "Черновик"
+        document.getElementById('{{ form.status.id_for_label }}').value = 'draft';
+        // Отправить форму
+        document.getElementById('articleForm').submit();
+    });
