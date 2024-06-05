@@ -37,35 +37,48 @@
                     {% endblock %}
                 </div>
             </div>
-            <div class="col-lg-9 col-xxl-5">
-                <div class="content-wrapper py-4">
-                    {% if articles %}
-                    {% for article in articles %}
-                    <div class="card mb-3">
-                        <div class="row">
-                            <div class="col-10">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <img src="{% if article.author.image %}{{ article.author.image.url }}{% else %}{% static 'blog/image/nouname.png' %}{% endif %}" class="rounded-circle z-depth-0 p-1 photo-nav" width="50">
-                                        <div class="ml-3">
-                                            <div>{{ article.author.username }}</div>
-                                            <div class="card-subtitle text-muted">{{ article.time_create|naturaltime }}</div>
-                                        </div>
-                                    </div>
-                                    <p class="card-text m-2">{{ article.short_description }}</p>
-                                    <a href="{% url 'articles_by_category' article.category.slug %}" class="btn btn-primary">{{ article.category.title }}</a>
-                                    <a href="{{ article.get_absolute_url }}" class="btn btn-secondary">Подробнее</a>
-<!--                                    -->
+         <div class="col-lg-9 col-xxl-5">
+    <div class="content-wrapper py-4">
+        {% if articles %}
+        {% for article in articles %}
+        <div class="card mb-3">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <img src="{% if article.author.image %}{{ article.author.image.url }}{% else %}{% static 'blog/image/nouname.png' %}{% endif %}" class="rounded-circle z-depth-0 p-1 photo-nav" width="50">
+                                <div class="ml-3">
+                                    <div>{{ article.author.username }}</div>
+                                    <div class="card-subtitle text-muted">{{ article.time_create|naturaltime }}</div>
                                 </div>
                             </div>
+                            <div class="dropdown ">
+                                <button class="btn btn-transparent  dropdown-toggle" type="button" id="dropdownMenuButton"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item">Редактировать</a></li>
+                                    <li><a class="dropdown-item" >Удалить</a></li>
+                                </ul>
+                            </div>
+                            
                         </div>
+                        <p class="card-text m-2">{{ article.short_description }}</p>
+                        <a href="{% url 'articles_by_category' article.category.slug %}" class="btn btn-primary">{{ article.category.title }}</a>
+                        <a href="{{ article.get_absolute_url }}" class="btn btn-secondary">Подробнее</a>
                     </div>
-                    {% endfor %}
-                    {% else %}
-                    {% include 'include/not_found_post.html' %}
-                    {% endif %}
                 </div>
             </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        {% include 'include/not_found_post.html' %}
+        {% endif %}
+    </div>
+</div>
+
         </div>
     </div>
 </div>

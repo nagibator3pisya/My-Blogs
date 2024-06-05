@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -95,13 +96,26 @@ class ProfileView(LoginRequiredMixin, UpdateView):
     template_name = 'blog/user/profile.html'
     success_url = reverse_lazy('profile')
 
-
     def get_object(self):
         return self.request.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['drafts'] = Article.objects.filter(author=self.request.user, status='draft')
+        drafts_list = Article.objects.filter(author=self.request.user, status='draft')
+
+        # Пагинация
+        paginator = Paginator(drafts_list, 4)  # 5 черновиков на странице
+        page = self.request.GET.get('page')
+
+        try:
+            drafts = paginator.page(page)
+        except PageNotAnInteger:
+            drafts = paginator.page(1)
+        except EmptyPage:
+            drafts = paginator.page(paginator.num_pages)
+
+        context['drafts'] = drafts
+        context['title'] = 'Профиль'
         return context
 
 
@@ -148,9 +162,9 @@ class UserPasswordResetConfirmView(SuccessMessageMixin, PasswordResetConfirmView
         context['title'] = 'Установить новый пароль'
         return context
 
-    # def get_success_message(self, cleaned_data):
-    #     # Используем self.request вместо request
-    #     return messages.success(self.request, self.success_message, extra_tags='alert-success')
+    def get_success_message(self, cleaned_data):
+        # Используем self.request вместо request
+        return messages.success(self.request, self.success_message, extra_tags='alert-success')
 
 
 

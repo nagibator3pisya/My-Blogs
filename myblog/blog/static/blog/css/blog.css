@@ -3,3 +3,12 @@
     border: 2px dashed #c4c4c4;
     color:#000000
 }
+.dropdown-menu a {
+  cursor: pointer;
+}
+.btn-transparent::after{
+  border: none;
+}
+.btn-transparent{
+  border: none;
+}
