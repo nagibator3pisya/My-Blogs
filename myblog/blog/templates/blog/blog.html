@@ -8,6 +8,7 @@
 {% block content %}
 <div class="container-fluid">
     <div class="container">
+
         <div class="row">
             <div class="col-lg-3">
                 <div class="content-wrapper py-4">
@@ -39,8 +40,10 @@
             </div>
          <div class="col-lg-9 col-xxl-5">
     <div class="content-wrapper py-4">
+
         {% if articles %}
         {% for article in articles %}
+
         <div class="card mb-3">
             <div class="row">
                 <div class="col-12">
@@ -59,18 +62,40 @@
                                     <i class="bi bi-three-dots-vertical"></i>
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item">Редактировать</a></li>
-                                    <li><a class="dropdown-item" >Удалить</a></li>
+                                    <li><a class="dropdown-item "  href="{% url 'articles_update' article.slug %}">Редактировать</a></li>
+                                          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" data-article-id="{{ article.id }}">Удалить</a></li>
                                 </ul>
                             </div>
                             
                         </div>
                         <p class="card-text m-2">{{ article.short_description }}</p>
-                        <a href="{% url 'articles_by_category' article.category.slug %}" class="btn btn-primary">{{ article.category.title }}</a>
+<!--                        <a href="{% url 'articles_by_category' article.category.slug %}" class="btn btn-primary">{{ article.category.title }}</a>-->
+
                         <a href="{{ article.get_absolute_url }}" class="btn btn-secondary">Подробнее</a>
                     </div>
                 </div>
             </div>
+        <!-- Модальное окно -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Удаление статьи</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Вы действительно хотите удалить эту статью?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Удалить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+<!-- CSRF token -->
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
         </div>
         {% endfor %}
         {% else %}
@@ -82,4 +107,9 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_script %}
+ <script src="{% static 'blog/js/blog.js' %}"></script>
+
 {% endblock %}

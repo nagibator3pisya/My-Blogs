@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'mptt',
     'django.contrib.humanize',
     'blog',
+    'taggit',
 
 
 ]

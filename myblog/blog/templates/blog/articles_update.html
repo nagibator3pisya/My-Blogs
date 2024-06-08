@@ -1,24 +1,22 @@
 {% extends 'blog/base.html' %}
 {% load static %}
 {% block extra_styles %}
-<link rel="stylesheet" href="{% static 'blog/css/create_article.css' %}">
+<link rel="stylesheet" href="{% static 'blog/css/articles_update.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2>{{ title }}</h2>
-    <form method="POST"
-        action="{% if form.instance.pk %}{% url 'articles_detail' form.instance.slug %}{% else %}{% url 'articles_create' %}{% endif %}"
-        id="articleForm" enctype="multipart/form-data" novalidate>
+    <h2>Обновление статьи: {{ article.title }}</h2>
+    <form method="POST" action="{% url 'articles_update' article.slug %}" id="articleForm" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
 
         <div class="mb-3">
             <label for="{{ form.title.id_for_label }}" class="form-label">Заголовок</label>
             {{ form.title }}
             {% if form.title.errors %}
-            <div class="text-danger">
-                {{ form.title.errors }}
-            </div>
+                <div class="text-danger">
+                    {{ form.title.errors }}
+                </div>
             {% endif %}
         </div>
 
@@ -26,9 +24,9 @@
             <label for="{{ form.category.id_for_label }}" class="form-label">Категория</label>
             {{ form.category }}
             {% if form.category.errors %}
-            <div class="text-danger">
-                {{ form.category.errors }}
-            </div>
+                <div class="text-danger">
+                    {{ form.category.errors }}
+                </div>
             {% endif %}
         </div>
 
@@ -36,9 +34,9 @@
             <label for="{{ form.short_description.id_for_label }}" class="form-label">Краткое описание</label>
             {{ form.short_description }}
             {% if form.short_description.errors %}
-            <div class="text-danger">
-                {{ form.short_description.errors }}
-            </div>
+                <div class="text-danger">
+                    {{ form.short_description.errors }}
+                </div>
             {% endif %}
         </div>
 
@@ -46,9 +44,9 @@
             <label for="{{ form.full_description.id_for_label }}" class="form-label">Полное описание</label>
             {{ form.full_description }}
             {% if form.full_description.errors %}
-            <div class="text-danger">
-                {{ form.full_description.errors }}
-            </div>
+                <div class="text-danger">
+                    {{ form.full_description.errors }}
+                </div>
             {% endif %}
         </div>
 
@@ -56,30 +54,28 @@
             <label for="{{ form.thumbnail.id_for_label }}" class="form-label">Изображение</label>
             {{ form.thumbnail }}
             {% if form.thumbnail.errors %}
-            <div class="text-danger">
-                {{ form.thumbnail.errors }}
-            </div>
-            {% endif %}
-        </div>
-        <div class="mb-3">
-            <label for="{{ form.tags.id_for_label }}" class="form-label">Теги</label>
-            {{ form.tags }}
-            {% if form.tags.errors %}
-            <div class="text-danger">
-                {{ form.tags.errors }}
-            </div>
+                <div class="text-danger">
+                    {{ form.thumbnail.errors }}
+                </div>
             {% endif %}
         </div>
 
         <input type="hidden" name="status" id="statusField" value="published">
 
-        <button type="submit" class="btn create_article">Опубликовать</button>
-        <a class="btn draft_article" href="{% url 'profile' %}">Вернуться</a>
-
-
+        <button type="submit" class="btn btn_article_supdate">Редактировать статью</button>
     </form>
 </div>
-
-
-
 {% endblock %}
+
+{% block extra_script %}
+<script src="{% static 'blog/js/blog.js' %}"></script>
+{% endblock %}
+
+
+
+
+
+
+
+
+

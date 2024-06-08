@@ -5,7 +5,8 @@ from django.urls import path
 from . import views
 
 from .views import accept_cookies, logout_view, ProfileView, UserForgotPasswordView, UserPasswordResetConfirmView, \
-    ArticleByCategoryListView, ArticleDetailView, ArticleCreateView, ArticleEditView
+    ArticleByCategoryListView, ArticleDetailView, ArticleCreateView, ArticleEditView, ArticleUpdateView, \
+    ArticleDeleteView
 
 from django.contrib.auth import views as auth_views
 
@@ -29,6 +30,9 @@ urlpatterns = [
     path('articles/<str:slug>/', ArticleDetailView.as_view(), name='articles_detail'),
     path('articles/', ArticleCreateView.as_view(), name='articles_create'),
     path('articles/<slug:slug>/edit/', ArticleEditView.as_view(), name='articles_edit'),
+    path('articles/<str:slug>/update/', ArticleUpdateView.as_view(), name='articles_update'),
+    path('articles/<int:pk>/delete/', ArticleDeleteView.as_view(), name='articles_delete'),
+
 ]
 
 if settings.DEBUG:

@@ -4,6 +4,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm, PasswordResetForm, \
     SetPasswordForm
 from django.core.exceptions import ValidationError
+from taggit.forms import TagWidget
 
 from blog.models import User, Article, Category
 
@@ -184,12 +185,12 @@ class ArticleCreateForm(forms.ModelForm):
         error_messages={'required': 'Пожалуйста, выберите категорию.'}
     )
     short_description = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'form-control'}),
+        widget=forms.Textarea(attrs={'class': 'form-control' ,'placeholder': 'Краткое описание будет отображаться в новостной ленте'}),
         required=True,
         error_messages={'required': 'Пожалуйста, введите краткое описание.'}
     )
     full_description = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'form-control'}),
+        widget=forms.Textarea(attrs={'class': 'form-control','placeholder': 'Полное описание будет отображаться уже в детальной карточке'}),
         required=True,
         error_messages={'required': 'Пожалуйста, введите полное описание.'}
     )
@@ -203,9 +204,12 @@ class ArticleCreateForm(forms.ModelForm):
         required=True,
         error_messages={'required': 'Пожалуйста, выберите статус статьи.'}
     )
+
     class Meta:
         model = Article
         fields = ('title', 'category', 'short_description', 'full_description', 'thumbnail', 'status')
+
+
 
 
 class ArticleUpdateForm(forms.ModelForm):
@@ -220,12 +224,12 @@ class ArticleUpdateForm(forms.ModelForm):
         error_messages={'required': 'Пожалуйста, выберите категорию.'}
     )
     short_description = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'form-control'}),
+        widget=forms.Textarea(attrs={'class': 'form-control',  'placeholder': 'Краткое описание будет отображаться в новостной ленте'}),
         required=True,
         error_messages={'required': 'Пожалуйста, введите краткое описание.'}
     )
     full_description = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'form-control'}),
+        widget=forms.Textarea(attrs={'class': 'form-control','placeholder': 'Полное описание будет отображаться уже в детальной карточке'}),
         required=True,
         error_messages={'required': 'Пожалуйста, введите полное описание.'}
     )
@@ -239,6 +243,27 @@ class ArticleUpdateForm(forms.ModelForm):
         required=True,
         error_messages={'required': 'Пожалуйста, выберите статус статьи.'}
     )
+
     class Meta:
         model = Article
         fields = ('title', 'category', 'short_description', 'full_description', 'thumbnail', 'status')
+
+
+
+class ArticlUpdateForm(ArticleCreateForm):
+    """
+    Форма обновления статьи на сайте
+    """
+    class Meta:
+        model = Article
+        fields = ArticleCreateForm.Meta.fields + ('updater', 'fixed')
+
+    def __init__(self, *args, **kwargs):
+        """
+        Обновление стилей формы под Bootstrap
+        """
+        super().__init__(*args, **kwargs)
+
+        self.fields['fixed'].widget.attrs.update({
+                'class': 'form-check-input'
+        })

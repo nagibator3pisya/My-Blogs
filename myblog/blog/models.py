@@ -6,11 +6,13 @@ from django.urls import reverse
 from mptt.models import MPTTModel, TreeForeignKey
 from django.db import models
 
+
 from blog.modules.services.utils import unique_slugify
 
 
 class User(AbstractUser):
     image = models.ImageField(upload_to='user_images', blank=True, null=False)
+
 
 
 class Article(models.Model):
@@ -40,6 +42,8 @@ class Article(models.Model):
     author = models.ForeignKey(to=User, verbose_name='Автор', on_delete=models.SET_DEFAULT, related_name='author_posts', default=1)
     updater = models.ForeignKey(to=User, verbose_name='Обновил', on_delete=models.SET_NULL, null=True, related_name='updater_posts', blank=True)
     fixed = models.BooleanField(verbose_name='Зафиксировано', default=False)
+
+
 
     class Meta:
         db_table = 'app_articles'

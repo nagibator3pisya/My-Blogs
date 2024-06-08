@@ -9,9 +9,9 @@ from django.http import JsonResponse
 from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserForgotPasswordForm, \
-    UserSetNewPasswordForm, ArticleCreateForm, ArticleUpdateForm
+    UserSetNewPasswordForm, ArticleCreateForm, ArticleUpdateForm, ArticlUpdateForm
 from django.contrib.auth import login as auth_login
 
 from blog.models import Article, Category
@@ -245,3 +245,45 @@ class ArticleEditView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Черновики'
         return context
+
+
+class ArticleUpdateView(UpdateView):
+    """
+    Представление: обновления материала на сайте
+    """
+    model = Article
+    template_name = 'blog/articles_update.html'
+    context_object_name = 'article'
+    form_class = ArticlUpdateForm
+    success_message = 'Статья отредактирована'
+    success_url = reverse_lazy('blog')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Обновление статьи: {self.object.title}'
+        return context
+
+    def form_valid(self, form):
+        # form.instance.updater = self.request.user
+        form.save()
+        return super().form_valid(form)
+
+
+class ArticleDeleteView(DeleteView):
+    """
+    Представление: удаления материала
+    """
+    model = Article
+    success_url = reverse_lazy('blog')
+    context_object_name = 'article'
+    template_name = 'blog/articles_delete.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Удаление статьи: {self.object.title}'
+        return context
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return JsonResponse({'status': 'success'})
