@@ -1,3 +1,5 @@
+import re
+
 from django.contrib import auth, messages
 from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.decorators import login_required
@@ -10,8 +12,10 @@ from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from taggit.models import Tag
+
 from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserForgotPasswordForm, \
-    UserSetNewPasswordForm, ArticleCreateForm, ArticleUpdateForm, ArticlUpdateForm
+    UserSetNewPasswordForm, ArticleCreateForm, ArticleEditUpdateForm, ArticleUpdateForm
 from django.contrib.auth import login as auth_login
 
 from blog.models import Article, Category
@@ -201,18 +205,12 @@ class ArticleDetailView(DetailView):
         return context
 
 
-
 class ArticleCreateView(CreateView):
-    """
-    Представление: создание материалов на сайте
-    """
     model = Article
     template_name = 'blog/create_article/create_article.html'
     form_class = ArticleCreateForm
     success_url = reverse_lazy('blog')
-    success_message = 'Пожалуйста, исправьте ошибки в форме.'
-
-
+    success_message = 'Статья успешно создана.'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -220,10 +218,17 @@ class ArticleCreateView(CreateView):
         return context
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
-        if form.cleaned_data.get('status') == 'draft':
-            messages.success(self.request, 'Статья сохранена как черновик.')
-        form.save()
+        article = form.save(commit=False)
+        tags = form.cleaned_data.get('tags')
+        article.save()  # Сохраняем статью перед добавлением тегов
+        if tags:
+            tag_list = re.split(r'[,\s]+', tags)
+            for tag in tag_list:
+                tag = tag.strip()
+                if tag:
+                    tag_obj, created = Tag.objects.get_or_create(name=tag)
+                    article.tags.add(tag_obj)  # Добавляем тег к статье
+        messages.success(self.request, self.success_message)
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -237,7 +242,7 @@ class ArticleCreateView(CreateView):
 class ArticleEditView(UpdateView):
     model = Article
     template_name = 'blog/create_article/articles_edit.html'
-    form_class = ArticleUpdateForm
+    form_class = ArticleEditUpdateForm
 
 
 
@@ -246,15 +251,17 @@ class ArticleEditView(UpdateView):
         context['title'] = 'Черновики'
         return context
 
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+
 
 class ArticleUpdateView(UpdateView):
-    """
-    Представление: обновления материала на сайте
-    """
     model = Article
     template_name = 'blog/articles_update.html'
     context_object_name = 'article'
-    form_class = ArticlUpdateForm
+    form_class = ArticleUpdateForm
     success_message = 'Статья отредактирована'
     success_url = reverse_lazy('blog')
 
@@ -264,9 +271,10 @@ class ArticleUpdateView(UpdateView):
         return context
 
     def form_valid(self, form):
-        # form.instance.updater = self.request.user
         form.save()
+        messages.success(self.request, self.success_message)
         return super().form_valid(form)
+
 
 
 class ArticleDeleteView(DeleteView):

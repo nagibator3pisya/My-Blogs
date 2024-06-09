@@ -5,8 +5,8 @@ from django.urls import path
 from . import views
 
 from .views import accept_cookies, logout_view, ProfileView, UserForgotPasswordView, UserPasswordResetConfirmView, \
-    ArticleByCategoryListView, ArticleDetailView, ArticleCreateView, ArticleEditView, ArticleUpdateView, \
-    ArticleDeleteView
+    ArticleByCategoryListView, ArticleDetailView, ArticleCreateView, ArticleEditView, ArticleDeleteView, \
+    ArticleUpdateView
 
 from django.contrib.auth import views as auth_views
 

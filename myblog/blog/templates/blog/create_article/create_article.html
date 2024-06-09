@@ -59,6 +59,15 @@
                 </div>
             {% endif %}
         </div>
+            <div class="mb-3">
+                <label for="{{ form.tags.id_for_label }}" class="form-label">Теги</label>
+                {{ form.tags }}
+                {% if form.tags.errors %}
+                <div class="text-danger">
+                    {{ form.tags.errors }}
+                </div>
+                {% endif %}
+            </div>
 
 
         

@@ -60,6 +60,22 @@
             {% endif %}
         </div>
 
+    <div class="mb-3">
+        <label for="{{ form.tags.id_for_label }}" class="form-label">Теги</label>
+        {{ form.tags }}
+        {% if form.tags.errors %}
+        <div class="text-danger">
+            {{ form.tags.errors }}
+        </div>
+        {% endif %}
+    </div>
+
+<!--        <p class="tags">-->
+<!--    {% for tag in article.tags.all %}-->
+<!--        <span class="badge text-bg-success">{{ tag.name }}</span>-->
+<!--    {% endfor %}-->
+<!--</p>-->
+
         <input type="hidden" name="status" id="statusField" value="published">
 
         <button type="submit" class="btn btn_article_supdate">Редактировать статью</button>
