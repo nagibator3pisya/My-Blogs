@@ -231,9 +231,9 @@ class ArticleCreateForm(forms.ModelForm):
 
 
 
-class ArticleEditUpdateForm(forms.ModelForm):
+class ArticleDraftUpdateForm(forms.ModelForm):
     """
-    Форма для редактирование в черновике
+    Форма для редактирования черновиков
     """
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     category = forms.ModelChoiceField(
@@ -279,6 +279,8 @@ class ArticleUpdateForm(ArticleCreateForm):
     """
     Форма обновления статьи на сайте
     """
+    tags = forms.CharField(label='Теги', max_length=1000, required=False)
+
     class Meta:
         model = Article
         fields = ArticleCreateForm.Meta.fields + ('updater', 'fixed')
@@ -287,13 +289,26 @@ class ArticleUpdateForm(ArticleCreateForm):
         """
         Обновление стилей формы под Bootstrap
         """
+        tags = kwargs.pop('tags', '')  # Получаем строку тегов из аргументов
         super().__init__(*args, **kwargs)
 
         self.fields['fixed'].widget.attrs.update({
             'class': 'form-check-input'
         })
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     if self.instance.pk:
-    #         self.fields['tags'].initial = ', '.join(tag.name for tag in self.instance.tags.all())
+        # Применяем классы Bootstrap к полю для ввода тегов
+        self.fields['tags'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Введите теги через запятую'
+        })
+
+        # Заполняем поле с тегами строкой из аргументов
+        self.initial['tags'] = tags
+
+    def clean_tags(self):
+        tags = self.cleaned_data.get('tags')
+        if tags:
+            # Преобразуем строку тегов в список
+            tag_list = re.split(r'[,\s]+', tags)
+            return ','.join(tag.strip() for tag in tag_list if tag.strip())
+        return ''

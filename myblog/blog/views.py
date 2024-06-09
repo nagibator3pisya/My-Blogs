@@ -15,7 +15,7 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 from taggit.models import Tag
 
 from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserForgotPasswordForm, \
-    UserSetNewPasswordForm, ArticleCreateForm, ArticleEditUpdateForm, ArticleUpdateForm
+    UserSetNewPasswordForm, ArticleCreateForm, ArticleUpdateForm, ArticleDraftUpdateForm
 from django.contrib.auth import login as auth_login
 
 from blog.models import Article, Category
@@ -242,9 +242,7 @@ class ArticleCreateView(CreateView):
 class ArticleEditView(UpdateView):
     model = Article
     template_name = 'blog/create_article/articles_edit.html'
-    form_class = ArticleEditUpdateForm
-
-
+    form_class = ArticleDraftUpdateForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -255,6 +253,11 @@ class ArticleEditView(UpdateView):
         form.save()
         return super().form_valid(form)
 
+    def get_initial(self):
+        initial = super().get_initial()
+        tags = self.object.tags.values_list('name', flat=True)  # Получаем список имен тегов
+        initial['tags'] = ', '.join(tags)  # Преобразуем список в строку
+        return initial
 
 
 class ArticleUpdateView(UpdateView):
@@ -270,11 +273,15 @@ class ArticleUpdateView(UpdateView):
         context['title'] = f'Обновление статьи: {self.object.title}'
         return context
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['tags'] = ', '.join(tag.name for tag in self.object.tags.all())
+        return kwargs
+
     def form_valid(self, form):
         form.save()
         messages.success(self.request, self.success_message)
         return super().form_valid(form)
-
 
 
 class ArticleDeleteView(DeleteView):
