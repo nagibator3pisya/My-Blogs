@@ -108,7 +108,7 @@ class ProfileView(LoginRequiredMixin, UpdateView):
         drafts_list = Article.objects.filter(author=self.request.user, status='draft')
 
         # Пагинация
-        paginator = Paginator(drafts_list, 4)  # 5 черновиков на странице
+        paginator = Paginator(drafts_list, 4)  # 4 черновика на странице
         page = self.request.GET.get('page')
 
         try:
@@ -122,6 +122,14 @@ class ProfileView(LoginRequiredMixin, UpdateView):
         context['title'] = 'Профиль'
         return context
 
+    def post(self, request, *args, **kwargs):
+        if 'delete_draft' in request.POST:
+            draft_id = request.POST.get('delete_draft')
+            draft = get_object_or_404(Article, id=draft_id, author=self.request.user)
+            draft.delete()
+            messages.success(request, 'Черновик был удален.')
+            return redirect('profile')
+        return super().post(request, *args, **kwargs)
 
 
 @csrf_exempt  # Use this decorator to exempt this view from CSRF verification

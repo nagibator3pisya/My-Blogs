@@ -72,7 +72,7 @@
 <!--                        <a href="{% url 'articles_by_category' article.category.slug %}" class="btn btn-primary">{{ article.category.title }}</a>-->
 <!--                          <p class="tags">Tags: {% for tag in article.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>-->
                         <div class="tags">
-                            Tags:
+                            Тег:
                             {% for tag in article.tags.all %}
                             <span class="badge text-bg-success">{{ tag.name }}</span>
                             {% endfor %}
