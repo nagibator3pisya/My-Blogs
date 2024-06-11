@@ -105,10 +105,26 @@ class ProfileView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        drafts_list = Article.objects.filter(author=self.request.user, status='draft')
+        context['title'] = 'Профиль'
+        return context
+
+
+
+class DraftsView(LoginRequiredMixin, ListView):
+    model = Article
+    template_name = 'blog/user/drafts.html'
+    context_object_name = 'drafts'
+    paginate_by = 4
+
+    def get_queryset(self):
+        return Article.objects.filter(author=self.request.user, status='draft')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        drafts_list = self.get_queryset()
 
         # Пагинация
-        paginator = Paginator(drafts_list, 4)  # 4 черновика на странице
+        paginator = Paginator(drafts_list, self.paginate_by)
         page = self.request.GET.get('page')
 
         try:
@@ -119,17 +135,20 @@ class ProfileView(LoginRequiredMixin, UpdateView):
             drafts = paginator.page(paginator.num_pages)
 
         context['drafts'] = drafts
-        context['title'] = 'Профиль'
+        context['title'] = 'Черновики'
         return context
 
     def post(self, request, *args, **kwargs):
         if 'delete_draft' in request.POST:
             draft_id = request.POST.get('delete_draft')
-            draft = get_object_or_404(Article, id=draft_id, author=self.request.user)
+            draft = get_object_or_404(Article, id=draft_id, author=request.user)
             draft.delete()
             messages.success(request, 'Черновик был удален.')
-            return redirect('profile')
+            return redirect('drafts')
         return super().post(request, *args, **kwargs)
+
+
+
 
 
 @csrf_exempt  # Use this decorator to exempt this view from CSRF verification
