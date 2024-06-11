@@ -273,12 +273,19 @@ class ArticleEditView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Черновики'
+        context['title'] = 'Редактировать статью'
         return context
 
     def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
+        article = form.save(commit=False)
+        article.status = self.request.POST.get('status', 'draft')
+        article.save()
+        if article.status == 'published':
+            messages.success(self.request, 'Статья была опубликована.')
+            return redirect('articles_detail', slug=article.slug)
+        else:
+            messages.success(self.request, 'Черновик был сохранен.')
+            return redirect('drafts')
 
     def get_initial(self):
         initial = super().get_initial()

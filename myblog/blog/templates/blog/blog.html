@@ -69,8 +69,6 @@
                             
                         </div>
                         <p class="card-text m-2">{{ article.short_description }}</p>
-<!--                        <a href="{% url 'articles_by_category' article.category.slug %}" class="btn btn-primary">{{ article.category.title }}</a>-->
-<!--                          <p class="tags">Tags: {% for tag in article.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>-->
                         <div class="tags">
                             Тег:
                             {% for tag in article.tags.all %}
