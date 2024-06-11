@@ -217,6 +217,25 @@ class ArticleByCategoryListView(ListView):
         return context
 
 
+class UserSettingsView(LoginRequiredMixin, TemplateView):
+    template_name = 'blog/user/setting_user.html'
+    form_class = UserProfileForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class(instance=self.request.user)
+        context['title'] = 'Настройки аккаунта'
+        context['setting_user'] = 'Ваши Данные'
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Ваши настройки были успешно обновлены.')
+        else:
+            messages.error(request, 'Пожалуйста, исправьте ошибки ниже.')
+        return self.render_to_response(self.get_context_data(form=form))
 # просмотр подробнее поста
 
 

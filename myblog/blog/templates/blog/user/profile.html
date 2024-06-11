@@ -46,125 +46,59 @@
             </div>
 
             <div class="col-lg-8 ">
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-sm-3">
-                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Имя</label>
-                                </div>
-                                <div class="col-sm-9 text-secondary">
-                                    {{ form.last_name }}
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-sm-3">
-                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">Фамилия</label>
-                                </div>
-                                <div class="col-sm-9 text-secondary">
-                                    {{ form.first_name }}
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-sm-3">
-                                    <label for="{{ form.username.id_for_label }}" class="form-label">Логин</label>
-                                </div>
-                                <div class="col-sm-9 text-secondary">
-                                    {{ form.username }}
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-sm-3">
-                                    <label for="{{ form.email.id_for_label }}" class="form-label">Эл. почта</label>
-                                </div>
-                                <div class="col-sm-9 text-secondary">
-                                    {{ form.email }}
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-sm-3">
-                                    <label for="{{ form.image.id_for_label }}" class="form-label">Фото</label>
-                                </div>
-                                <div class="col-sm-9 text-secondary">
-                                    {{ form.image }}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-3"></div>
-                                <div class="col-sm-9 text-secondary">
-                                    <button type="submit" class="btn btn-save px-4">Сохранить</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-<!--                <div class="card mt-3">-->
-<!--                    <div class="card-body">-->
-<!--                        <h5>Черновики</h5>-->
-
-<!--                        {% if drafts %}-->
-<!--                            {% for draft in drafts %}-->
-<!--                                <div class="card mt-1">-->
-<!--                                    <div class="card-body">-->
-<!--                                        <h5 class="card-title">{{ draft.title }}</h5>-->
-<!--                                        <p class="card-text">{{ draft.short_description }}</p>-->
-<!--                                        <a href="{% url 'articles_edit' draft.slug %}" class="btn btn-edit">Редактировать</a>-->
-<!--                                        <form method="post" class="d-inline">-->
-<!--                                            {% csrf_token %}-->
-<!--                                            <input type="hidden" name="delete_draft" value="{{ draft.id }}">-->
-<!--                                            <button type="submit" class="btn btn-danger">Удалить</button>-->
-<!--                                        </form>-->
-<!--                                    </div>-->
+<!--                <form method="post" enctype="multipart/form-data">-->
+<!--                    {% csrf_token %}-->
+<!--                    <div class="card">-->
+<!--                        <div class="card-body">-->
+<!--                            <div class="row mb-3">-->
+<!--                                <div class="col-sm-3">-->
+<!--                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Имя</label>-->
 <!--                                </div>-->
-<!--                            {% endfor %}-->
-
-<!--                            &lt;!&ndash; Пагинация &ndash;&gt;-->
-<!--                            <nav aria-label="Page navigation">-->
-<!--                                <ul class="pagination justify-content-center mt-2">-->
-<!--                                    {% if drafts.has_previous %}-->
-<!--                                    <li class="page-item">-->
-<!--                                        <a class="page-link" href="?page={{ drafts.previous_page_number }}" aria-label="Previous">-->
-<!--                                            <span aria-hidden="true">&laquo;</span>-->
-<!--                                        </a>-->
-<!--                                    </li>-->
-<!--                                    {% else %}-->
-<!--                                    <li class="page-item disabled">-->
-<!--                                        <span class="page-link" aria-label="Previous">&laquo;</span>-->
-<!--                                    </li>-->
-<!--                                    {% endif %}-->
-
-<!--                                    {% for num in drafts.paginator.page_range %}-->
-<!--                                    {% if drafts.number == num %}-->
-<!--                                    <li class="page-item active">-->
-<!--                                        <span class="page-link">{{ num }}</span>-->
-<!--                                    </li>-->
-<!--                                    {% elif num > drafts.number|add:'-3' and num < drafts.number|add:'3' %}-->
-<!--                                    <li class="page-item">-->
-<!--                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>-->
-<!--                                    </li>-->
-<!--                                    {% endif %}-->
-<!--                                    {% endfor %}-->
-
-<!--                                    {% if drafts.has_next %}-->
-<!--                                    <li class="page-item">-->
-<!--                                        <a class="page-link" href="?page={{ drafts.next_page_number }}" aria-label="Next">-->
-<!--                                            <span aria-hidden="true">&raquo;</span>-->
-<!--                                        </a>-->
-<!--                                    </li>-->
-<!--                                    {% else %}-->
-<!--                                    <li class="page-item disabled">-->
-<!--                                        <span class="page-link" aria-label="Next">&raquo;</span>-->
-<!--                                    </li>-->
-<!--                                    {% endif %}-->
-<!--                                </ul>-->
-<!--                            </nav>-->
-<!--                        {% else %}-->
-
-<!--                          {% include 'include/not_found_draft.html' %}-->
-<!--                        {% endif %}-->
+<!--                                <div class="col-sm-9 text-secondary">-->
+<!--                                    {{ form.last_name }}-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="row mb-3">-->
+<!--                                <div class="col-sm-3">-->
+<!--                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">Фамилия</label>-->
+<!--                                </div>-->
+<!--                                <div class="col-sm-9 text-secondary">-->
+<!--                                    {{ form.first_name }}-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="row mb-3">-->
+<!--                                <div class="col-sm-3">-->
+<!--                                    <label for="{{ form.username.id_for_label }}" class="form-label">Логин</label>-->
+<!--                                </div>-->
+<!--                                <div class="col-sm-9 text-secondary">-->
+<!--                                    {{ form.username }}-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="row mb-3">-->
+<!--                                <div class="col-sm-3">-->
+<!--                                    <label for="{{ form.email.id_for_label }}" class="form-label">Эл. почта</label>-->
+<!--                                </div>-->
+<!--                                <div class="col-sm-9 text-secondary">-->
+<!--                                    {{ form.email }}-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="row mb-3">-->
+<!--                                <div class="col-sm-3">-->
+<!--                                    <label for="{{ form.image.id_for_label }}" class="form-label">Фото</label>-->
+<!--                                </div>-->
+<!--                                <div class="col-sm-9 text-secondary">-->
+<!--                                    {{ form.image }}-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-sm-3"></div>-->
+<!--                                <div class="col-sm-9 text-secondary">-->
+<!--                                    <button type="submit" class="btn btn-save px-4">Сохранить</button>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
 <!--                    </div>-->
-<!--                </div>-->
+<!--                </form>-->
             </div>
         </div>
     </div>
