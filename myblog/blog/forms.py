@@ -121,13 +121,27 @@ class UserProfileForm(UserChangeForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     image = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
+    About_me = forms.ChoiceField(widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Расскажите немного о себе, это же круто будет'}),required=False)
+    Programming_skills = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Введите языки программирования через запятую'}),required=False)
+
 
     class Meta:
         model = User
-        fields = ('last_name','first_name', 'username','email', 'image')
+        fields = ('last_name','first_name', 'username','email', 'image','About_me', 'Programming_skills')
 
-
-
+    def clean_Programming_skills(self):
+        programming_skills = self.cleaned_data.get('Programming_skills')
+        if programming_skills:
+            if not re.match(r'^[\w\s,]+$', programming_skills):
+                raise ValidationError('Пожалуйста, введите языки программирования, разделенные запятой.')
+            skills_list = re.split(r'[,\s]+', programming_skills)
+            cleaned_skills = []
+            for skill in skills_list:
+                skill = skill.strip()
+                if skill:
+                    cleaned_skills.append(skill)
+            return ','.join(cleaned_skills)
+        return ''
 class UserForgotPasswordForm(PasswordResetForm):
     """
     Запрос на восстановление пароля
@@ -312,3 +326,19 @@ class ArticleUpdateForm(ArticleCreateForm):
             tag_list = re.split(r'[,\s]+', tags)
             return ','.join(tag.strip() for tag in tag_list if tag.strip())
         return ''
+
+
+class UserPasswordChangeForm(SetPasswordForm):
+    """
+    Форма изменения пароля
+    """
+    def __init__(self, *args, **kwargs):
+        """
+        Обновление стилей формы
+        """
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control',
+                'autocomplete': 'off'
+            })

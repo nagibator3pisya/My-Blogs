@@ -1,10 +1,10 @@
 import re
 
 from django.contrib import auth, messages
-from django.contrib.auth import logout, get_user_model
+from django.contrib.auth import logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import JsonResponse
@@ -15,7 +15,7 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 from taggit.models import Tag
 
 from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserForgotPasswordForm, \
-    UserSetNewPasswordForm, ArticleCreateForm, ArticleUpdateForm, ArticleDraftUpdateForm
+    UserSetNewPasswordForm, ArticleCreateForm, ArticleUpdateForm, ArticleDraftUpdateForm, UserPasswordChangeForm
 from django.contrib.auth import login as auth_login
 
 from blog.models import Article, Category
@@ -216,29 +216,47 @@ class ArticleByCategoryListView(ListView):
         context['title'] = f'Статьи из категории: {self.category.title}'
         return context
 
-
 class UserSettingsView(LoginRequiredMixin, TemplateView):
     template_name = 'blog/user/setting_user.html'
-    form_class = UserProfileForm
+    profile_form_class = UserProfileForm
+    password_form_class = UserPasswordChangeForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = self.form_class(instance=self.request.user)
+        if 'profile_form' not in context:
+            context['profile_form'] = self.profile_form_class(instance=self.request.user)
+        if 'password_form' not in context:
+            context['password_form'] = self.password_form_class(user=self.request.user)
         context['title'] = 'Настройки аккаунта'
         context['setting_user'] = 'Ваши Данные'
+        context['setting_password'] = 'Изменения пароля'
         return context
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, request.FILES, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Ваши настройки были успешно обновлены.')
-        else:
-            messages.error(request, 'Пожалуйста, исправьте ошибки ниже.')
-        return self.render_to_response(self.get_context_data(form=form))
-# просмотр подробнее поста
+        profile_form = self.profile_form_class(request.POST, request.FILES, instance=request.user)
+        password_form = self.password_form_class(user=request.user, data=request.POST)
 
+        if 'update_profile' in request.POST:
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'Ваши настройки были успешно обновлены.')
+            else:
+                messages.error(request, 'Пожалуйста, исправьте ошибки ниже.')
 
+        elif 'change_password' in request.POST:
+            if password_form.is_valid():
+                user = password_form.save()
+                messages.success(request, 'Ваш пароль был успешно изменён!')
+                update_session_auth_hash(request, user)  # Обновляем сессию пользователя
+                return redirect(self.get_success_url())
+            else:
+                messages.error(request, 'Пожалуйста, исправьте ошибки ниже.')
+
+        return self.render_to_response(self.get_context_data(profile_form=profile_form, password_form=password_form))
+
+    def get_success_url(self):
+        # Замените 'blog' на имя URL-адреса страницы блога или другого шаблона
+        return reverse_lazy('blog')
 
 class ArticleDetailView(DetailView):
     model = Article
