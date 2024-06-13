@@ -1,14 +1,20 @@
-.card_post_not_found{
-    background-color: #ffffff71;
-    border: 2px dashed #c4c4c4;
-    color:#000000
+.card_post_not_found {
+  background-color: #ffffff71;
+  border: 2px dashed #c4c4c4;
+  color: #000000;
 }
 .dropdown-menu a {
   cursor: pointer;
 }
-.btn-transparent::after{
+.btn-transparent::after {
   border: none;
 }
-.btn-transparent{
+.btn-transparent {
   border: none;
 }
+
+.thumbnail-image {
+  max-width: 100px; /* Измените это значение на нужный размер */
+  height: auto;
+}
+

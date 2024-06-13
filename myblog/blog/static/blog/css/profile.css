@@ -28,16 +28,14 @@
 
 /* Стили для ссылок или кнопок пагинации */
 .page-link {
-
   color: rgb(0, 0, 0);
   background-color: rgb(255, 255, 255);
-  border: 1px solid rgb(179, 179, 179);;
+  border: 1px solid rgb(179, 179, 179);
   transition: background-color 0.15s, border-color 0.15s, color 0.15s;
 }
 
 /* Стили для ссылки или кнопки при наведении */
 .page-link:hover {
-
   color: #8e8e8e;
   background-color: #e9ecef;
   border-color: #dee2e6;
@@ -45,7 +43,6 @@
 
 /* Стили для активного элемента пагинации */
 .page-item.active .page-link {
-
   color: #fff;
   background-color: rgba(20, 184, 144, 1);
   border-color: rgb(15, 218, 35);
@@ -59,9 +56,12 @@
   border-color: #dee2e6;
 }
 
+.card_draft_not_found {
+  background-color: #ffffff71;
+  border: 2px dashed #c4c4c4;
+  color: #000000;
+}
 
-.card_draft_not_found{
-    background-color: #ffffff71;
-    border: 2px dashed #c4c4c4;
-    color:#000000
+.about_me, .programming_skills{
+  border-bottom: 2px solid rgba(20, 184, 144, 1)
 }

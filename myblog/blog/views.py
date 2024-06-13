@@ -94,18 +94,24 @@ def blog(request):
 #         context['drafts'] = Article.objects.filter(author=self.request.user)
 #
 #         return context
-class ProfileView(LoginRequiredMixin, UpdateView):
+
+
+
+class ProfileView(LoginRequiredMixin, DetailView):
     model = User
-    form_class = UserProfileForm
     template_name = 'blog/user/profile.html'
-    success_url = reverse_lazy('profile')
+    context_object_name = 'user_profile'
 
     def get_object(self):
         return self.request.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        programming_skills = user.Programming_skills.split(',') if user.Programming_skills else []
         context['title'] = 'Профиль'
+        context['programming_skills'] = programming_skills
+        context['user_profile_username'] = f"@{user.username}"
         return context
 
 
@@ -233,17 +239,17 @@ class UserSettingsView(LoginRequiredMixin, TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        profile_form = self.profile_form_class(request.POST, request.FILES, instance=request.user)
-        password_form = self.password_form_class(user=request.user, data=request.POST)
-
-        if 'update_profile' in request.POST:
+        if request.POST.get('form_type') == 'profile_form':
+            profile_form = self.profile_form_class(request.POST, request.FILES, instance=request.user)
             if profile_form.is_valid():
                 profile_form.save()
                 messages.success(request, 'Ваши настройки были успешно обновлены.')
             else:
                 messages.error(request, 'Пожалуйста, исправьте ошибки ниже.')
+            return self.render_to_response(self.get_context_data(profile_form=profile_form))
 
-        elif 'change_password' in request.POST:
+        elif request.POST.get('form_type') == 'password_form':
+            password_form = self.password_form_class(user=request.user, data=request.POST)
             if password_form.is_valid():
                 user = password_form.save()
                 messages.success(request, 'Ваш пароль был успешно изменён!')
@@ -251,12 +257,13 @@ class UserSettingsView(LoginRequiredMixin, TemplateView):
                 return redirect(self.get_success_url())
             else:
                 messages.error(request, 'Пожалуйста, исправьте ошибки ниже.')
+            return self.render_to_response(self.get_context_data(password_form=password_form))
 
-        return self.render_to_response(self.get_context_data(profile_form=profile_form, password_form=password_form))
+        return self.render_to_response(self.get_context_data())
 
     def get_success_url(self):
-        # Замените 'blog' на имя URL-адреса страницы блога или другого шаблона
         return reverse_lazy('blog')
+
 
 class ArticleDetailView(DetailView):
     model = Article

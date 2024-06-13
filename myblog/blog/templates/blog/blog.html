@@ -13,101 +13,121 @@
             <div class="col-lg-3">
                 <div class="content-wrapper py-4">
                     {% block category_tree %}
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Категории</h5>
-                                {% full_tree_for_model blog.Category as categories %}
-                                <p class="card-text">
-                                    <ul>
-                                        {% recursetree categories %}
-                                            <li>
-                                                {% if node.slug %}
-                                                    <a href="{{ node.get_absolute_url }}">{{ node.title }}</a>
-                                                {% else %}
-                                                    {{ node.title }}
-                                                {% endif %}
-                                            </li>
-                                            {% if not node.is_leaf_node %}<ul>{% endif %}
-                                                {{children}}
-                                            {% if not node.is_leaf_node %}</ul>{% endif %}
-                                        {% endrecursetree %}
-                                    </ul>
-                                </p>
-                            </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Категории</h5>
+                            {% full_tree_for_model blog.Category as categories %}
+                            <p class="card-text">
+                            <ul>
+                                {% recursetree categories %}
+                                <li>
+                                    {% if node.slug %}
+                                    <a href="{{ node.get_absolute_url }}">{{ node.title }}</a>
+                                    {% else %}
+                                    {{ node.title }}
+                                    {% endif %}
+                                </li>
+                                {% if not node.is_leaf_node %}<ul>{% endif %}
+                                    {{children}}
+                                    {% if not node.is_leaf_node %}</ul>{% endif %}
+                                {% endrecursetree %}
+                            </ul>
+                            </p>
                         </div>
+                    </div>
                     {% endblock %}
                 </div>
             </div>
-         <div class="col-lg-9 col-xxl-5">
-    <div class="content-wrapper py-4">
+            <div class="col-lg-9 col-xxl-5">
+                <div class="content-wrapper py-4">
 
-        {% if articles %}
-        {% for article in articles %}
+                    {% if articles %}
+                    {% for article in articles %}
 
-        <div class="card mb-3">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex align-items-center">
-                                <img src="{% if article.author.image %}{{ article.author.image.url }}{% else %}{% static 'blog/image/nouname.png' %}{% endif %}" class="rounded-circle z-depth-0 p-1 photo-nav" width="50">
-                                <div class="ml-3">
-                                    <div>{{ article.author.username }}</div>
-                                    <div class="card-subtitle text-muted">{{ article.time_create|naturaltime }}</div>
+                    <div class="card mb-3">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{% if article.author.image %}{{ article.author.image.url }}{% else %}{% static 'blog/image/nouname.png' %}{% endif %}"
+                                                class="rounded-circle z-depth-0 p-1 photo-nav" width="50">
+                                            <div class="ml-3">
+                                                <div>{{ article.author.username }}</div>
+                                                <div class="card-subtitle text-muted">{{ article.time_create|naturaltime }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown ">
+                                            <button class="btn btn-transparent  dropdown-toggle" type="button"
+                                                id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <li><a class="dropdown-item "
+                                                        href="{% url 'articles_update' article.slug %}">Редактировать</a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal"
+                                                        data-article-id="{{ article.id }}">Удалить</a></li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                    <div class="d-flex">
+                                        {% if article.thumbnail %}
+                                        <img src="{{ article.thumbnail.url }}" class="thumbnail-image img-fluid mt-3 me-3" alt="{{ article.title }}">
+                                        {% endif %}
+                                        <p class="card-text m-2 text-break">{{ article.short_description }}</p>
+                                    </div>
+                                    
+                                    <div class="tags">
+                                        Тег:
+                                        {% for tag in article.tags.all %}
+                                        <span class="badge text-bg-success">{{ tag.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    <a href="{{ article.get_absolute_url }}"
+                                        class="btn btn-secondary mt-2">Подробнее</a>
+
+                                </div>
+                                <div class="card-footer">
+                                   <!-- <i class="bi bi-chat-left"></i> -->
+                                <!-- <i class="bi bi-heart"></i> -->
                                 </div>
                             </div>
-                            <div class="dropdown ">
-                                <button class="btn btn-transparent  dropdown-toggle" type="button" id="dropdownMenuButton"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-three-dots-vertical"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item "  href="{% url 'articles_update' article.slug %}">Редактировать</a></li>
-                                          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" data-article-id="{{ article.id }}">Удалить</a></li>
-                                </ul>
-                            </div>
-                            
                         </div>
-                        <p class="card-text m-2">{{ article.short_description }}</p>
-                        <div class="tags">
-                            Тег:
-                            {% for tag in article.tags.all %}
-                            <span class="badge text-bg-success">{{ tag.name }}</span>
-                            {% endfor %}
+                        <!-- Модальное окно -->
+                        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel">Удаление статьи</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Вы действительно хотите удалить эту статью?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Отмена</button>
+                                        <button type="button" class="btn btn-danger"
+                                            id="confirmDeleteButton">Удалить</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <a href="{{ article.get_absolute_url }}" class="btn btn-secondary mt-2">Подробнее</a>
+                        <!-- CSRF token -->
+                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                     </div>
+                    {% endfor %}
+                    {% else %}
+                    {% include 'include/not_found_post.html' %}
+                    {% endif %}
                 </div>
             </div>
-        <!-- Модальное окно -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Удаление статьи</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                Вы действительно хотите удалить эту статью?
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Удалить</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-<!-- CSRF token -->
-<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-        </div>
-        {% endfor %}
-        {% else %}
-        {% include 'include/not_found_post.html' %}
-        {% endif %}
-    </div>
-</div>
 
         </div>
     </div>
@@ -115,6 +135,6 @@
 {% endblock %}
 
 {% block extra_script %}
- <script src="{% static 'blog/js/blog.js' %}"></script>
+<script src="{% static 'blog/js/blog.js' %}"></script>
 
 {% endblock %}

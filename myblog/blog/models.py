@@ -12,6 +12,12 @@ from blog.modules.services.utils import unique_slugify
 
 class User(AbstractUser):
     image = models.ImageField(upload_to='user_images', blank=True, null=False)
+    About_me = models.TextField(blank=True, null=True)
+    Programming_skills = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.username
+
 
 
 

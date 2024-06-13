@@ -11,6 +11,7 @@
     <div class="card-body">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
+            <input type="hidden" name="form_type" value="profile_form">
             <div class="row mb-3">
                 <div class="col-sm-3">
                     <label for="{{ profile_form.last_name.id_for_label }}" class="form-label">Имя</label>
@@ -75,7 +76,7 @@
             <div class="row">
                 <div class="col-sm-3"></div>
                 <div class="col-sm-9 text-secondary">
-                    <button type="submit" class="btn btn-save px-4">Сохранить</button>
+                    <button type="submit" name="update_profile" class="btn btn-save px-4">Сохранить</button>
                 </div>
             </div>
         </form>
@@ -84,6 +85,7 @@
 
    <form method="post" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
+    <input type="hidden" name="form_type" value="password_form">
     <div class="card mt-4">
         <h4 class="text-center">{{ setting_password }}</h4>
         <div class="card-body">

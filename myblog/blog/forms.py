@@ -4,7 +4,6 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm, PasswordResetForm, \
     SetPasswordForm
 from django.core.exceptions import ValidationError
-from taggit.forms import TagWidget
 from taggit.models import Tag
 
 from blog.models import User, Article, Category
@@ -121,13 +120,18 @@ class UserProfileForm(UserChangeForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     image = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
-    About_me = forms.ChoiceField(widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Расскажите немного о себе, это же круто будет'}),required=False)
-    Programming_skills = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Введите языки программирования через запятую'}),required=False)
-
+    About_me = forms.CharField(widget=forms.Textarea(attrs={
+        'class': 'form-control',
+        'placeholder': 'Расскажите немного о себе, это же круто будет'
+    }), required=False)
+    Programming_skills = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Введите языки программирования через запятую'
+    }), required=False)
 
     class Meta:
         model = User
-        fields = ('last_name','first_name', 'username','email', 'image','About_me', 'Programming_skills')
+        fields = ('last_name', 'first_name', 'username', 'email', 'image', 'About_me', 'Programming_skills')
 
     def clean_Programming_skills(self):
         programming_skills = self.cleaned_data.get('Programming_skills')
@@ -135,13 +139,11 @@ class UserProfileForm(UserChangeForm):
             if not re.match(r'^[\w\s,]+$', programming_skills):
                 raise ValidationError('Пожалуйста, введите языки программирования, разделенные запятой.')
             skills_list = re.split(r'[,\s]+', programming_skills)
-            cleaned_skills = []
-            for skill in skills_list:
-                skill = skill.strip()
-                if skill:
-                    cleaned_skills.append(skill)
+            cleaned_skills = [skill.strip() for skill in skills_list if skill]
             return ','.join(cleaned_skills)
         return ''
+
+
 class UserForgotPasswordForm(PasswordResetForm):
     """
     Запрос на восстановление пароля
@@ -202,12 +204,14 @@ class ArticleCreateForm(forms.ModelForm):
     short_description = forms.CharField(
         widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Краткое описание будет отображаться в новостной ленте'}),
         required=True,
-        error_messages={'required': 'Пожалуйста, введите краткое описание.'}
+        error_messages={'required': 'Пожалуйста, введите краткое описание.'},
+        max_length=100
     )
     full_description = forms.CharField(
         widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Полное описание будет отображаться уже в детальной карточке'}),
         required=True,
-        error_messages={'required': 'Пожалуйста, введите полное описание.'}
+        error_messages={'required': 'Пожалуйста, введите полное описание.'},
+
     )
     thumbnail = forms.ImageField(
         widget=forms.FileInput(attrs={'class': 'form-control'}),
