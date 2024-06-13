@@ -18,3 +18,38 @@
   height: auto;
 }
 
+.like-icon {
+  fill: currentColor; /* Устанавливаем цвет через currentColor */
+  color: black; /* Основной цвет иконки */
+  transition: color 0.3s ease; /* Плавный переход цвета */
+}
+
+.like-icon:hover {
+  color: red; /* Цвет при наведении */
+}
+
+.btn-secondary {
+  position: relative;
+  text-decoration: none;
+  color: #000;
+  transition: color 0.3s ease;
+}
+
+.btn-secondary::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px; /* Толщина линии */
+  background-color: #23e129ec; /* Цвет линии */
+  transition: width 0.3s ease; /* Плавный переход ширины */
+}
+
+.btn-secondary:hover::after {
+  width: 100%; /* Ширина линии при наведении */
+}
+
+.btn-secondary:hover {
+  color: #000; /* Сохранение цвета текста при наведении */
+}
