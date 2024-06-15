@@ -214,7 +214,8 @@ class ArticleByCategoryListView(ListView):
 
     def get_queryset(self):
         self.category = Category.objects.get(slug=self.kwargs['slug'])
-        queryset = Article.objects.all().filter(category__slug=self.category.slug)
+        # отчечет за ебаный чернвоик.
+        queryset = Article.objects.filter(category__slug=self.category.slug, status='published')
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -290,22 +291,26 @@ class ArticleCreateView(CreateView):
 
     def form_valid(self, form):
         article = form.save(commit=False)
+        article.author = self.request.user
+
+        # Установите статус в зависимости от переданного значения
+        article.status = self.request.POST.get('status', 'draft')
+
         tags = form.cleaned_data.get('tags')
-        article.save()  # Сохраняем статью перед добавлением тегов
+        article.save()
         if tags:
             tag_list = re.split(r'[,\s]+', tags)
             for tag in tag_list:
                 tag = tag.strip()
                 if tag:
                     tag_obj, created = Tag.objects.get_or_create(name=tag)
-                    article.tags.add(tag_obj)  # Добавляем тег к статье
+                    article.tags.add(tag_obj)
         messages.success(self.request, self.success_message)
-        return super().form_valid(form)
+        return redirect(self.success_url)
 
     def form_invalid(self, form):
         messages.error(self.request, 'Пожалуйста, исправьте ошибки в форме.')
         return super().form_invalid(form)
-
 
 
 
@@ -322,21 +327,21 @@ class ArticleEditView(UpdateView):
 
     def form_valid(self, form):
         article = form.save(commit=False)
-        article.status = self.request.POST.get('status', 'draft')
+        article.status = self.request.POST.get('status', 'draft')  # Устанавливаем статус из формы
         article.save()
+
         if article.status == 'published':
             messages.success(self.request, 'Статья была опубликована.')
             return redirect('articles_detail', slug=article.slug)
         else:
             messages.success(self.request, 'Черновик был сохранен.')
-            return redirect('drafts')
+            return redirect('drafts')  # Замените 'drafts' на имя вашего URL-шаблона для черновиков
 
     def get_initial(self):
         initial = super().get_initial()
         tags = self.object.tags.values_list('name', flat=True)  # Получаем список имен тегов
         initial['tags'] = ', '.join(tags)  # Преобразуем список в строку
         return initial
-
 
 class ArticleUpdateView(UpdateView):
     model = Article
