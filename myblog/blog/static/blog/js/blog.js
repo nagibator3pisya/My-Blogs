@@ -35,3 +35,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('.like-container').forEach(container => {
+        container.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const likeCount = this.querySelector('.like-count');
+            let count = parseInt(likeCount.textContent);
+            if (this.classList.contains('active')) {
+                count++;
+            } else {
+                count--;
+            }
+            likeCount.textContent = count;
+        });
+    });
+});

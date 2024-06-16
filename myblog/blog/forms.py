@@ -6,7 +6,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, User
 from django.core.exceptions import ValidationError
 from taggit.models import Tag
 
-from blog.models import User, Article, Category
+from blog.models import User, Article, Category, Comment
 
 
 class UserLoginForm(AuthenticationForm):
@@ -346,3 +346,15 @@ class UserPasswordChangeForm(SetPasswordForm):
                 'class': 'form-control',
                 'autocomplete': 'off'
             })
+
+
+class CommentCreateForm(forms.ModelForm):
+    """
+    Форма добавления комментариев к статьям
+    """
+    parent = forms.IntegerField(widget=forms.HiddenInput, required=False)
+    content = forms.CharField(label='', widget=forms.Textarea(attrs={'cols': 30, 'rows': 5, 'placeholder': 'Комментарий', 'class': 'form-control'}))
+
+    class Meta:
+        model = Comment
+        fields = ('content',)
