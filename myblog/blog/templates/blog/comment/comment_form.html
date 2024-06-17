@@ -1,0 +1,15 @@
+
+{% extends 'blog/base.html' %}
+{% load static %}
+<!--{% block extra_styles %}-->
+<!--<link rel="stylesheet" href="{% static 'blog/css/profile.css' %}">-->
+<!--{% endblock %}-->
+{% block content %}
+    <form method="post" action="{% url 'comment_create_view' article.pk %}" id="commentForm" name="commentForm" data-article-id="{{ article.pk }}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="d-grid gap-2 d-md-block mt-2">
+        <button type="submit" class="btn btn-dark" id="commentSubmit">Добавить комментарий</button>
+    </div>
+</form>
+{% endblock %}
