@@ -224,6 +224,14 @@ class ArticleByCategoryListView(ListView):
         context['title'] = f'Статьи из категории: {self.category.title}'
         return context
 
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset=queryset)
+        # Увеличиваем количество просмотров на 1 каждый раз, когда статья просматривается
+        obj.views += 1
+        obj.save()
+        return obj
+
 class UserSettingsView(LoginRequiredMixin, TemplateView):
     template_name = 'blog/user/setting_user.html'
     profile_form_class = UserProfileForm
