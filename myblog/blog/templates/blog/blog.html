@@ -105,8 +105,13 @@
                                             </svg>
                                              <span class="like-count">{{ article.comments.count }}</span>
                                         </div>
+
+
                                     </div>
-                                    <a href="{{ article.get_absolute_url }}" class="btn-secondary">Подробнее</a>
+                                    <div class="d-flex">
+                                        <a href="{{ article.get_absolute_url }}" class="btn-secondary me-2">Подробнее</a>
+                                         <span><i class="bi bi-eye"></i> {{article.get_view_count}}</span>
+                                    </div>
 
                                 </div>
 

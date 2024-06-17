@@ -19,6 +19,7 @@ from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, Use
     CommentCreateForm
 from django.contrib.auth import login as auth_login
 
+from blog.mixins import ViewCountMixin
 from blog.models import Article, Category, Comment
 
 User = get_user_model()
@@ -207,7 +208,7 @@ class UserPasswordResetConfirmView(SuccessMessageMixin, PasswordResetConfirmView
 
 
 
-class ArticleByCategoryListView(ListView):
+class ArticleByCategoryListView(ViewCountMixin,ListView):
     model = Article
     template_name = 'blog/blog.html'
     context_object_name = 'articles'
@@ -225,12 +226,6 @@ class ArticleByCategoryListView(ListView):
         return context
 
 
-    def get_object(self, queryset=None):
-        obj = super().get_object(queryset=queryset)
-        # Увеличиваем количество просмотров на 1 каждый раз, когда статья просматривается
-        obj.views += 1
-        obj.save()
-        return obj
 
 class UserSettingsView(LoginRequiredMixin, TemplateView):
     template_name = 'blog/user/setting_user.html'
@@ -275,7 +270,7 @@ class UserSettingsView(LoginRequiredMixin, TemplateView):
         return reverse_lazy('blog')
 
 
-class ArticleDetailView(DetailView):
+class ArticleDetailView(ViewCountMixin,DetailView):
     model = Article
     template_name = 'blog/articles_detail.html'
     context_object_name = 'article'
@@ -431,3 +426,6 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
             }, status=200)
 
         return redirect(comment.article.get_absolute_url())
+
+
+
