@@ -98,7 +98,6 @@ def blog(request):
 #         return context
 
 
-
 class ProfileView(LoginRequiredMixin, DetailView):
     model = User
     template_name = 'blog/user/profile.html'
@@ -110,12 +109,17 @@ class ProfileView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.get_object()
-        programming_skills = user.Programming_skills.split(',') if user.Programming_skills else []
+
+        # Проверяем наличие атрибута и используем его
+        if hasattr(user, 'programming_skills') and user.programming_skills:
+            programming_skills = user.programming_skills.split(',')
+        else:
+            programming_skills = []
+
         context['title'] = 'Профиль'
         context['programming_skills'] = programming_skills
         context['user_profile_username'] = f"@{user.username}"
         return context
-
 
 
 class DraftsView(LoginRequiredMixin, ListView):
@@ -420,12 +424,31 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
                 'author': comment.author.username,
                 'parent_id': comment.parent_id,
                 'time_create': comment.time_create.strftime('%Y-%b-%d %H:%M:%S'),
-                'avatar': comment.author.profile.avatar.url,
+                'avatar': comment.author.get_avatar_url(),  # Используем метод get_avatar_url
                 'content': comment.content,
-                'get_absolute_url': comment.author.profile.get_absolute_url()
+                'get_absolute_url': comment.author.get_absolute_url()
             }, status=200)
 
         return redirect(comment.article.get_absolute_url())
 
 
+
+
+class UserProfileView(DetailView):
+    model = User
+    template_name = 'blog/user/profile.html'
+    context_object_name = 'user_profile'
+
+    def get_object(self):
+        username = self.kwargs.get("username")
+        return get_object_or_404(User, username=username)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        programming_skills = user.Programming_skills.split(',') if user.Programming_skills else []
+        context['title'] = 'Профиль'
+        context['programming_skills'] = programming_skills
+        context['user_profile_username'] = f"@{user.username}"
+        return context
 

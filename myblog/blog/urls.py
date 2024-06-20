@@ -6,7 +6,7 @@ from . import views
 
 from .views import accept_cookies, logout_view, ProfileView, UserForgotPasswordView, UserPasswordResetConfirmView, \
     ArticleByCategoryListView, ArticleDetailView, ArticleCreateView, ArticleEditView, ArticleDeleteView, \
-    ArticleUpdateView, DraftsView, UserSettingsView, CommentCreateView
+    ArticleUpdateView, DraftsView, UserSettingsView, CommentCreateView, UserProfileView
 
 from django.contrib.auth import views as auth_views
 
@@ -35,6 +35,7 @@ urlpatterns = [
     path('articles/<int:pk>/delete/', ArticleDeleteView.as_view(), name='articles_delete'),
     path('settings/', UserSettingsView.as_view(), name='user_settings'),
     path('articles/<int:pk>/comments/create/', CommentCreateView.as_view(), name='comment_create_view'),
+    path('profile/<str:username>/', UserProfileView.as_view(), name='user_profile'),
 
 ]
 

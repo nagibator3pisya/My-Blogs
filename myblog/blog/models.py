@@ -8,7 +8,7 @@ from django.db import models
 from taggit.managers import TaggableManager
 
 from blog.modules.services.utils import unique_slugify
-
+from django.templatetags.static import static
 
 class User(AbstractUser):
     image = models.ImageField(upload_to='user_images', blank=True, null=False)
@@ -18,7 +18,13 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+    def get_absolute_url(self):
+        return reverse('user_profile', kwargs={'username': self.username})
 
+    def get_avatar_url(self):
+        if self.image:
+            return self.image.url
+        return static('blog/image/nouname.png')
 
 
 
