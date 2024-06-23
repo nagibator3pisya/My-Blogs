@@ -37,18 +37,50 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-document.addEventListener('DOMContentLoaded', (event) => {
-    document.querySelectorAll('.like-container').forEach(container => {
-        container.addEventListener('click', function() {
-            this.classList.toggle('active');
-            const likeCount = this.querySelector('.like-count');
-            let count = parseInt(likeCount.textContent);
-            if (this.classList.contains('active')) {
-                count++;
+const likeButtons = document.querySelectorAll('.like-container');
+
+likeButtons.forEach(button => {
+    button.addEventListener('click', event => {
+        const articleId = button.dataset.articleId;
+        const likeCount = button.querySelector('.like-count');
+
+        const formData = new FormData();
+        formData.append('article_id', articleId);
+
+        fetch("/like/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCSRFToken(),  // Получаем CSRF токен с помощью функции
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'liked' || data.status === 'unliked') {
+                likeCount.textContent = data.like_count;
+                button.classList.toggle('active', data.status === 'liked');
             } else {
-                count--;
+                console.error('Error:', data.message);
             }
-            likeCount.textContent = count;
-        });
+        })
+        .catch(error => console.error(error));
     });
 });
+
+function getCSRFToken() {
+    var cookieValue = null;
+    var name = 'csrftoken';
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+        }
+    }
+    return cookieValue;
+}
+
+
+

@@ -9,6 +9,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import JsonResponse, HttpResponseForbidden
 from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_or_404
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -20,7 +21,8 @@ from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, Use
 from django.contrib.auth import login as auth_login
 
 from blog.mixins import ViewCountMixin
-from blog.models import Article, Category, Comment
+from blog.models import Article, Category, Comment, Rating, Like
+from blog.modules.services.utils import get_client_ip
 
 User = get_user_model()
 
@@ -459,3 +461,26 @@ class UserProfileView(DetailView):
         return context
 
 
+class LikeToggleView(View):
+
+    def post(self, request, *args, **kwargs):
+        article_id = request.POST.get('article_id')
+        ip_address = get_client_ip(request)
+        user = request.user if request.user.is_authenticated else None
+
+        try:
+            article = Article.objects.get(id=article_id)
+        except Article.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Article not found'}, status=404)
+
+        like, created = Like.objects.get_or_create(
+            article=article,
+            ip_address=ip_address,
+            user=user,
+        )
+
+        if not created:
+            like.delete()
+            return JsonResponse({'status': 'unliked', 'like_count': article.get_like_count()})
+
+        return JsonResponse({'status': 'liked', 'like_count': article.get_like_count()})
