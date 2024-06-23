@@ -53,7 +53,7 @@
                                             <img src="{% if article.author.image %}{{ article.author.image.url }}{% else %}{% static 'blog/image/nouname.png' %}{% endif %}"
                                                 class="rounded-circle z-depth-0 p-1 photo-nav" width="50">
                                             <div class="ml-3">
-                                                <div>{{ article.author.username }}</div>
+                                               <div><a class="author" href="{{ article.author.get_absolute_url }}">{{ article.author.username }}</a></div>
                                                 <div class="card-subtitle text-muted">{{ article.time_create|naturaltime}}</div>
                                             </div>
                                         </div>

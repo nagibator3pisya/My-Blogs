@@ -72,30 +72,6 @@ def blog(request):
     return render(request, 'blog/blog.html', context)
 
 
-# def profile(request):
-#     if request.method == 'POST':
-#         form = UserProfileForm(request.POST, request.FILES, instance=request.user)
-#         if form.is_valid():
-#             form.save()
-#             return HttpResponseRedirect(reverse('profile'))
-#         else:
-#             print(form.errors)
-#     else:
-#         form = UserProfileForm(instance=request.user)
-#     context = {'title': 'Профиль', 'form': form}
-#     return render(request, 'blog/user/profile.html', context)
-#
-#
-# class ProfileView(TemplateView):
-#     template_name = 'user/profile.html'
-#
-#     def get_context_data(self, *kwargs):
-#         context = super().get_context_data(*kwargs)
-#         context['username'] = self.request.user.username
-#         context['first_name'] = self.request.user.first_name
-#         context['drafts'] = Article.objects.filter(author=self.request.user)
-#
-#         return context
 
 
 class ProfileView(LoginRequiredMixin, DetailView):
@@ -110,13 +86,11 @@ class ProfileView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         user = self.get_object()
 
-        # Проверяем наличие атрибута и используем его
-        if hasattr(user, 'programming_skills') and user.programming_skills:
-            programming_skills = user.programming_skills.split(',')
-        else:
-            programming_skills = []
+        programming_skills = user.Programming_skills.split(',') if user.Programming_skills else []
+        user_articles = Article.objects.filter(author=user)
 
         context['title'] = 'Профиль'
+        context['user_articles'] = user_articles
         context['programming_skills'] = programming_skills
         context['user_profile_username'] = f"@{user.username}"
         return context
@@ -213,6 +187,7 @@ class UserPasswordResetConfirmView(SuccessMessageMixin, PasswordResetConfirmView
 
 
 class ArticleByCategoryListView(ViewCountMixin,ListView):
+    # сам блог
     model = Article
     template_name = 'blog/blog.html'
     context_object_name = 'articles'
@@ -353,6 +328,7 @@ class ArticleEditView(UpdateView):
         initial['tags'] = ', '.join(tags)  # Преобразуем список в строку
         return initial
 
+
 class ArticleUpdateView(UpdateView):
     model = Article
     template_name = 'blog/articles_update.html'
@@ -446,9 +422,14 @@ class UserProfileView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.get_object()
+
         programming_skills = user.Programming_skills.split(',') if user.Programming_skills else []
+        user_articles = Article.objects.filter(author=user)
+
         context['title'] = 'Профиль'
+        context['user_articles'] = user_articles
         context['programming_skills'] = programming_skills
         context['user_profile_username'] = f"@{user.username}"
         return context
+
 

@@ -1,5 +1,8 @@
 
 {% load static %}
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'blog/css/comment_list.css' %}">
+{% endblock %}
 {% load mptt_tags static %}
 <div class="nested-comments">
     {% recursetree article.comments.all %}
@@ -14,12 +17,12 @@
                 <div class="col-md-10">
                     <div class="card-body">
                         <h6 class="card-title">
-                            <a href="{% url 'user_profile' username=node.author.username %}">{{ node.author }}</a>
+                            <a class="author" href="{% url 'user_profile' username=node.author.username %}">{{ node.author }}</a>
                         </h6>
                         <p class="card-text">
                             {{ node.content }}
                         </p>
-                        <a class="btn btn-sm btn-dark btn-reply"
+                        <a class="btn btn-sm btn-dark btn-reply "
                            href="#commentForm"
                            data-comment-id="{{ node.pk }}"
                            data-comment-username="{{ node.author }}">Ответить</a>

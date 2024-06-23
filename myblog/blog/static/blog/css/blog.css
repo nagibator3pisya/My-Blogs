@@ -90,3 +90,7 @@
   user-select: none; /* Запрещаем выделение текста */
 }
 
+.author{
+  text-decoration: none;
+  color: rgb(161, 161, 161);
+}

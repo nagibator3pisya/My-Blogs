@@ -62,6 +62,78 @@
   color: #000000;
 }
 
-.about_me, .programming_skills{
-  border-bottom: 2px solid rgba(20, 184, 144, 1)
+
+
+.btn-secondary {
+  position: relative;
+  text-decoration: none;
+  color: #000;
+  transition: color 0.3s ease;
+}
+
+.btn-secondary::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px; /* Толщина линии */
+  background-color: #23e129ec; /* Цвет линии */
+  transition: width 0.3s ease; /* Плавный переход ширины */
+}
+
+.btn-secondary:hover::after {
+  width: 100%; /* Ширина линии при наведении */
+}
+
+.btn-secondary:hover {
+  color: #000; /* Сохранение цвета текста при наведении */
+}
+
+.like-icon {
+  fill: currentColor; /* Устанавливаем цвет через currentColor */
+  color: black; /* Основной цвет иконки */
+  transition: color 0.3s ease; /* Плавный переход цвета */
+}
+
+.like-icon {
+  fill: currentColor; /* Устанавливаем цвет через currentColor */
+  color: black; /* Основной цвет иконки */
+  transition: color 0.3s ease; /* Плавный переход цвета */
+}
+
+.like-container,
+.comment-container {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 15px; /* Отступ справа от контейнера с лайками */
+  border: 1px solid #888888ec; /* Цвет линии */
+  border-radius: 10px;
+  padding: 5px; /* Внутренний отступ */
+  transition: background-color 0.3s ease; /* Плавный переход цвета фона */
+  cursor: pointer; /* Указатель курсора при наведении */
+}
+
+.like-container:hover {
+  border: 1px solid #ff0000ec; /* Цвет линии */
+  background-color: #ff000077;
+}
+
+.like-container.active {
+  background-color: red; /* Цвет фона при клике */
+}
+
+.like-icon {
+  margin-right: 5px; /* Отступ справа от иконки лайка */
+}
+
+.like-count {
+  font-size: 16px; /* Размер текста для количества лайков */
+  color: #000; /* Цвет текста */
+  user-select: none; /* Запрещаем выделение текста */
+}
+
+.author {
+  text-decoration: none;
+  color: rgb(161, 161, 161);
 }
