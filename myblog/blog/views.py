@@ -3,11 +3,11 @@ import re
 from django.contrib import auth, messages
 from django.contrib.auth import logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse, reverse_lazy
@@ -23,6 +23,27 @@ from blog.mixins import ViewCountMixin
 from blog.models import Article, Category, Comment
 
 User = get_user_model()
+
+
+class CanEditArticleMixin(UserPassesTestMixin):
+    def test_func(self):
+        article = self.get_object()  # Получаем объект статьи, который мы хотим редактировать
+        return self.request.user == article.author  # Проверяем, является ли текущий пользователь автором статьи
+
+    def handle_no_permission(self):
+        # Обработка случая, когда у пользователя нет прав доступа
+        # Можно вернуть 403 ошибку, перенаправление или что-то еще
+        return HttpResponseForbidden('У вас нет прав на редактирование этой статьи')
+
+
+class CanDeleteArticleMixin(UserPassesTestMixin):
+    def test_func(self):
+        article = self.get_object()
+        user = self.request.user
+        return user.is_superuser or user.groups.filter(name='Модераторы').exists() or article.author == user
+
+    def handle_no_permission(self):
+        return HttpResponseForbidden('У вас нет прав на удаление этой статьи')
 
 
 def home(request):
@@ -329,11 +350,11 @@ class ArticleEditView(UpdateView):
         return initial
 
 
-class ArticleUpdateView(UpdateView):
+class ArticleUpdateView(LoginRequiredMixin, CanEditArticleMixin, UpdateView):
     model = Article
     template_name = 'blog/articles_update.html'
     context_object_name = 'article'
-    form_class = ArticleUpdateForm
+    form_class = ArticleUpdateForm  # Используем только form_class
     success_message = 'Статья отредактирована'
     success_url = reverse_lazy('blog')
 
@@ -341,7 +362,6 @@ class ArticleUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['title'] = f'Обновление статьи: {self.object.title}'
         return context
-
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['tags'] = ', '.join(tag.name for tag in self.object.tags.all())
@@ -353,7 +373,13 @@ class ArticleUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class ArticleDeleteView(DeleteView):
+    def test_func(self):
+        # Проверка, является ли текущий пользователь администратором или автором статьи
+        article = self.get_object()
+        return self.request.user.is_superuser or self.request.user == article.author
+
+
+class ArticleDeleteView(LoginRequiredMixin, CanDeleteArticleMixin, DeleteView):
     """
     Представление: удаления материала
     """

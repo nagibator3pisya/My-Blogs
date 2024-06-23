@@ -57,17 +57,18 @@
                                                 <div class="card-subtitle text-muted">{{ article.time_create|naturaltime}}</div>
                                             </div>
                                         </div>
-                                        {% if request.user == article.author %}
-                                        <div class="dropdown">
-                                            <button class="btn btn-transparent dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="bi bi-three-dots-vertical"></i>
-                                            </button>
-                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <li><a class="dropdown-item" href="{% url 'articles_update' article.slug %}">Редактировать</a></li>
-                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" data-article-id="{{ article.id }}">Удалить</a></li>
-                                            </ul>
-                                        </div>
-                                        {% endif %}
+                                {% if request.user == article.author %}
+                                    <div class="dropdown">
+                                        <button class="btn btn-transparent dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li><a class="dropdown-item" href="{% url 'articles_update' article.slug %}">Редактировать</a></li>
+                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" data-article-id="{{ article.id }}">Удалить</a></li>
+                                        </ul>
+                                    </div>
+                                {% endif %}
+
 
 
                                     </div>
@@ -133,7 +134,7 @@
                                         Вы действительно хотите удалить эту статью?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
+                                        <button type="button" class="btn btn-edit"
                                             data-bs-dismiss="modal">Отмена</button>
                                         <button type="button" class="btn btn-danger"
                                             id="confirmDeleteButton">Удалить</button>

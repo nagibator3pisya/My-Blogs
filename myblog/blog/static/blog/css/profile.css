@@ -137,3 +137,9 @@
   text-decoration: none;
   color: rgb(161, 161, 161);
 }
+.btn-transparent::after {
+  border: none;
+}
+.btn-transparent {
+  border: none;
+}
