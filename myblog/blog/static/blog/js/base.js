@@ -115,27 +115,27 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // Проверяем, существует ли сообщение об успешной смене пароля в localStorage
-        var successMessage = localStorage.getItem('success_password_change');
-        if (successMessage) {
-            // Показываем модальное окно
-            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-            successModal.show();
-            // Удаляем сообщение об успешной смене пароля из localStorage
-            localStorage.removeItem('success_password_change');
-        }
-    });
+document.addEventListener('DOMContentLoaded', function () {
+    // Проверяем, существует ли сообщение об успешной смене пароля в localStorage
+    var successMessage = localStorage.getItem('success_password_change');
+    if (successMessage) {
+        // Показываем модальное окно
+        var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
+        // Удаляем сообщение об успешной смене пароля из localStorage
+        localStorage.removeItem('success_password_change');
+    }
+});
 
 
 
 
-    document.getElementById('cancelButton').addEventListener('click', function() {
-        // Установить значение статуса на "Черновик"
-        document.getElementById('{{ form.status.id_for_label }}').value = 'draft';
-        // Отправить форму
-        document.getElementById('articleForm').submit();
-    });
+document.getElementById('cancelButton').addEventListener('click', function () {
+    // Установить значение статуса на "Черновик"
+    document.getElementById('{{ form.status.id_for_label }}').value = 'draft';
+    // Отправить форму
+    document.getElementById('articleForm').submit();
+});
 
 
 //уведомление
@@ -154,18 +154,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Получение уведомлений через AJAX
     function fetchNotifications() {
-        fetch('/api/notifications/')
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(notification => {
-                    addNotification(notification);
-                });
-            })
-            .catch(error => console.error('Error fetching notifications:', error));
+        fetch('/api/notifications/', {
+            headers: {
+                'X-CSRFToken': getCSRFToken() // Вставляем CSRF-токен в заголовок запроса
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(notification => {
+                addNotification(notification);
+            });
+        })
+        .catch(error => console.error('Error fetching notifications:', error));
     }
 
     // Вызываем функцию получения уведомлений при загрузке страницы
     fetchNotifications();
 });
-
 
