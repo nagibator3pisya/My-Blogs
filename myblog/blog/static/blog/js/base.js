@@ -1,17 +1,22 @@
-
-
-document.getElementById('accept-cookies').addEventListener('click', function () {
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/accept-cookies/');
-    xhr.setRequestHeader('X-CSRFToken', getCSRFToken());
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            document.querySelector('.wrapper').classList.add('hide');
-        }
-    };
-    xhr.send();
+document.addEventListener('DOMContentLoaded', function () {
+    // Обработчик события для кнопки "accept-cookies"
+    var acceptCookiesBtn = document.getElementById('accept-cookies');
+    if (acceptCookiesBtn) {
+        acceptCookiesBtn.addEventListener('click', function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/accept-cookies/');
+            xhr.setRequestHeader('X-CSRFToken', getCSRFToken());
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    document.querySelector('.wrapper').classList.add('hide');
+                }
+            };
+            xhr.send();
+        });
+    }
 });
 
+// Функция для получения CSRF-токена из cookie
 function getCSRFToken() {
     var cookieValue = null;
     var name = 'csrftoken';
@@ -25,6 +30,8 @@ function getCSRFToken() {
     }
     return cookieValue;
 }
+
+
 
 
 
@@ -129,3 +136,36 @@ document.addEventListener("DOMContentLoaded", function () {
         // Отправить форму
         document.getElementById('articleForm').submit();
     });
+
+
+//уведомление
+document.addEventListener('DOMContentLoaded', () => {
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+
+    // Функция для добавления нового уведомления в меню
+    function addNotification(notification) {
+        const li = document.createElement('li');
+        li.classList.add('notification-item');
+        li.innerHTML = `
+            <a class="dropdown-item" href="#">${notification.message}</a>
+        `;
+        dropdownMenu.prepend(li); // Добавляем уведомление в начало списка
+    }
+
+    // Получение уведомлений через AJAX
+    function fetchNotifications() {
+        fetch('/api/notifications/')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(notification => {
+                    addNotification(notification);
+                });
+            })
+            .catch(error => console.error('Error fetching notifications:', error));
+    }
+
+    // Вызываем функцию получения уведомлений при загрузке страницы
+    fetchNotifications();
+});
+
+

@@ -38,6 +38,7 @@ urlpatterns = [
     path('profile/<str:username>/', UserProfileView.as_view(), name='user_profile'),
     path('like/', LikeToggleView.as_view(), name='like_toggle'),
     path('', article_list, name='article_list'),
+    path('api/notifications/', views.notifications, name='notifications_api'),
 ]
 
 if settings.DEBUG:

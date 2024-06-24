@@ -21,7 +21,7 @@ from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, Use
 from django.contrib.auth import login as auth_login
 
 from blog.mixins import ViewCountMixin
-from blog.models import Article, Category, Comment, Like
+from blog.models import Article, Category, Comment, Like, Notification
 from blog.modules.services.utils import get_client_ip
 
 User = get_user_model()
@@ -465,23 +465,29 @@ class UserProfileView(DetailView):
 class LikeToggleView(View):
     def post(self, request, *args, **kwargs):
         article_id = request.POST.get('article_id')
-        user = request.user if request.user.is_authenticated else None
+        user = request.user
 
+        # Получаем объект статьи или возвращаем ошибку 404, если статья не найдена
+        article = get_object_or_404(Article, id=article_id)
+
+        # Проверяем, существует ли лайк от пользователя для этой статьи
         try:
-            article = Article.objects.get(id=article_id)
-        except Article.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Article not found'}, status=404)
-
-        like, created = Like.objects.get_or_create(
-            article=article,
-            user=user,
-        )
-
-        if not created:
+            like = Like.objects.get(article=article, user=user)
             like.delete()
-            return JsonResponse({'status': 'unliked', 'like_count': article.get_like_count()})
+            liked = False
+        except Like.DoesNotExist:
+            Like.objects.create(article=article, user=user)
+            liked = True
 
-        return JsonResponse({'status': 'liked', 'like_count': article.get_like_count()})
+            # Создаем уведомление для автора статьи
+            Notification.objects.create(
+                user=article.author,  # Предположим, что в вашей модели Article есть поле author
+                message=f'Пользователь {user.username} лайкнул ваш пост "{article.title}".'
+            )
+
+        # Возвращаем JSON-ответ с обновленным количеством лайков и статусом
+        like_count = article.get_like_count()
+        return JsonResponse({'status': 'liked' if liked else 'unliked', 'like_count': like_count})
 
 
 @login_required
@@ -494,3 +500,13 @@ def article_list(request):
         'user_likes': user_likes,
     }
     return render(request, 'blog/blog.html', context)
+
+
+@login_required
+def notifications(request):
+    user = request.user
+    notifications = Notification.objects.filter(user=user).order_by('-created_at')[:10]
+    data = [{'message': notification.message} for notification in notifications]
+    return JsonResponse(data, safe=False)
+
+
