@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
 document.addEventListener('DOMContentLoaded', () => {
     const csrftoken = getCSRFToken();
     const likeButtons = document.querySelectorAll('.like-container');
@@ -50,7 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const likedKey = `liked_article_${articleId}`;
         const isLikedByUser = localStorage.getItem(likedKey) === 'true';
 
-        likeButton.classList.toggle('active', isLikedByUser);
+        // Устанавливаем начальное состояние лайка
+        button.classList.toggle('active', isLikedByUser);
 
         button.addEventListener('click', event => {
             event.preventDefault();
@@ -71,8 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     likeCount.textContent = data.like_count;
                     const updatedIsLiked = data.status === 'liked';
 
-                    // Обновляем класс активности кнопки лайка
-                    likeButton.classList.toggle('active', updatedIsLiked);
+                    // Обновляем класс активности контейнера лайка
+                    button.classList.toggle('active', updatedIsLiked);
 
                     // Сохраняем состояние лайка в localStorage
                     localStorage.setItem(likedKey, updatedIsLiked);

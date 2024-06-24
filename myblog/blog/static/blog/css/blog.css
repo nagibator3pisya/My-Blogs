@@ -56,7 +56,7 @@
   transition: color 0.3s ease; /* Плавный переход цвета */
 }
 
-.like-container,
+
 .comment-container {
   display: inline-flex;
   align-items: center;
@@ -68,33 +68,50 @@
   cursor: pointer; /* Указатель курсора при наведении */
 }
 
+.like-container {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 15px;
+  border: 1px solid #888888ec;
+  border-radius: 10px;
+  padding: 5px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
 .like-container:hover {
-  border: 1px solid #ff0000ec; /* Цвет линии */
+  border: 1px solid #ff0000ec;
   background-color: #ff000077;
 }
 
 .like-container.active {
-  background-color: red; /* Цвет фона при клике */
+  background-color: red; /* Цвет фона при активации лайка */
+  border: 1px solid red; /* Цвет рамки при активации лайка */
 }
 
 .like-icon {
-  margin-right: 5px; /* Отступ справа от иконки лайка */
-   color: black;
+  fill: currentColor;
+  color: black;
+  transition: color 0.3s ease;
+  margin-right: 5px;
+}
+
+.like-container.active .like-icon {
+  color: white; /* Цвет иконки при активации лайка */
 }
 
 .like-count {
-  font-size: 16px; /* Размер текста для количества лайков */
-  color: #000; /* Цвет текста */
-  user-select: none; /* Запрещаем выделение текста */
+  font-size: 16px;
+  color: black; /* Цвет текста количества лайков */
+}
+
+.like-container.active .like-count {
+  color: white; /* Цвет текста при активации лайка */
 }
 
 .author {
   text-decoration: none;
   color: rgb(161, 161, 161);
-}
-
-.like-icon.active {
-    fill: red;  /* Цвет активной кнопки "лайк" */
 }
 .btn-edit
  {
