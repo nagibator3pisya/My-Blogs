@@ -56,7 +56,7 @@ class Article(models.Model):
     updater = models.ForeignKey(to=User, verbose_name='Обновил', on_delete=models.SET_NULL, null=True, related_name='updater_posts', blank=True)
     fixed = models.BooleanField(verbose_name='Зафиксировано', default=False)
     tags = TaggableManager(blank=True)
-    likes_count = models.IntegerField(default=0, verbose_name='Количество лайков')
+    liked = models.BooleanField(verbose_name='Лайкнуто', default=False)  # Новое поле для отслеживания лайков
 
     class Meta:
         db_table = 'app_articles'
@@ -70,7 +70,6 @@ class Article(models.Model):
 
     def get_absolute_url(self):
         return reverse('articles_detail', kwargs={'slug': self.slug})
-
 
     def get_like_count(self):
         return self.likes.count()
@@ -89,6 +88,15 @@ class Article(models.Model):
         """
         return self.views.count()
 
+    def is_liked_by_user(self, user):
+        """
+        Проверяет, лайкнул ли пользователь данную статью.
+        """
+        try:
+            like = self.likes.get(user=user)
+            return True
+        except Like.DoesNotExist:
+            return False
 
 class Like(models.Model):
     article = models.ForeignKey(Article, related_name='likes', on_delete=models.CASCADE)
@@ -195,22 +203,3 @@ class ViewCount(models.Model):
         return self.article.title
 
 
-class Rating(models.Model):
-    """
-    Модель рейтинга: Лайк - Дизлайк
-    """
-    article = models.ForeignKey(to=Article, verbose_name='Статья', on_delete=models.CASCADE, related_name='ratings')
-    user = models.ForeignKey(to=User, verbose_name='Пользователь', on_delete=models.CASCADE, blank=True, null=True)
-    value = models.IntegerField(verbose_name='Значение', choices=[(1, 'Нравится'), (-1, 'Не нравится')])
-    time_create = models.DateTimeField(verbose_name='Время добавления', auto_now_add=True)
-    ip_address = models.GenericIPAddressField(verbose_name='IP Адрес')
-
-    class Meta:
-        unique_together = ('article', 'ip_address')
-        ordering = ('-time_create',)
-        indexes = [models.Index(fields=['-time_create', 'value'])]
-        verbose_name = 'Рейтинг'
-        verbose_name_plural = 'Рейтинги'
-
-    def __str__(self):
-        return self.article.title

@@ -6,7 +6,7 @@ from . import views
 
 from .views import accept_cookies, logout_view, ProfileView, UserForgotPasswordView, UserPasswordResetConfirmView, \
     ArticleByCategoryListView, ArticleDetailView, ArticleCreateView, ArticleEditView, ArticleDeleteView, \
-    ArticleUpdateView, DraftsView, UserSettingsView, CommentCreateView, UserProfileView, LikeToggleView
+    ArticleUpdateView, DraftsView, UserSettingsView, CommentCreateView, UserProfileView, LikeToggleView, article_list
 
 from django.contrib.auth import views as auth_views
 
@@ -36,7 +36,8 @@ urlpatterns = [
     path('settings/', UserSettingsView.as_view(), name='user_settings'),
     path('articles/<int:pk>/comments/create/', CommentCreateView.as_view(), name='comment_create_view'),
     path('profile/<str:username>/', UserProfileView.as_view(), name='user_profile'),
-    path('like/', LikeToggleView.as_view(), name='like-toggle'),
+    path('like/', LikeToggleView.as_view(), name='like_toggle'),
+    path('', article_list, name='article_list'),
 ]
 
 if settings.DEBUG:

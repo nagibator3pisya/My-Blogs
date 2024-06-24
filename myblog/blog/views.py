@@ -21,7 +21,7 @@ from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, Use
 from django.contrib.auth import login as auth_login
 
 from blog.mixins import ViewCountMixin
-from blog.models import Article, Category, Comment, Rating, Like
+from blog.models import Article, Category, Comment, Like
 from blog.modules.services.utils import get_client_ip
 
 User = get_user_model()
@@ -461,11 +461,10 @@ class UserProfileView(DetailView):
         return context
 
 
-class LikeToggleView(View):
 
+class LikeToggleView(View):
     def post(self, request, *args, **kwargs):
         article_id = request.POST.get('article_id')
-        ip_address = get_client_ip(request)
         user = request.user if request.user.is_authenticated else None
 
         try:
@@ -475,7 +474,6 @@ class LikeToggleView(View):
 
         like, created = Like.objects.get_or_create(
             article=article,
-            ip_address=ip_address,
             user=user,
         )
 
@@ -484,3 +482,15 @@ class LikeToggleView(View):
             return JsonResponse({'status': 'unliked', 'like_count': article.get_like_count()})
 
         return JsonResponse({'status': 'liked', 'like_count': article.get_like_count()})
+
+
+@login_required
+def article_list(request):
+    articles = Article.objects.all()
+    user_likes = Like.objects.filter(user=request.user).values_list('article_id', flat=True)
+
+    context = {
+        'articles': articles,
+        'user_likes': user_likes,
+    }
+    return render(request, 'blog/blog.html', context)

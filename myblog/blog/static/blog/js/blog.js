@@ -36,35 +36,52 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const csrftoken = getCSRFToken();
+    const likeButtons = document.querySelectorAll('.like-container');
 
-const likeButtons = document.querySelectorAll('.like-container');
-
-likeButtons.forEach(button => {
-    button.addEventListener('click', event => {
+    likeButtons.forEach(button => {
         const articleId = button.dataset.articleId;
+        const likeUrl = button.dataset.likeUrl;
         const likeCount = button.querySelector('.like-count');
+        const likeButton = button.querySelector('.like-icon');
 
-        const formData = new FormData();
-        formData.append('article_id', articleId);
+        // Проверяем, сохранен ли лайк в localStorage
+        const likedKey = `liked_article_${articleId}`;
+        const isLikedByUser = localStorage.getItem(likedKey) === 'true';
 
-        fetch("/like/", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": getCSRFToken(),  // Получаем CSRF токен с помощью функции
-                "X-Requested-With": "XMLHttpRequest",
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'liked' || data.status === 'unliked') {
-                likeCount.textContent = data.like_count;
-                button.classList.toggle('active', data.status === 'liked');
-            } else {
-                console.error('Error:', data.message);
-            }
-        })
-        .catch(error => console.error(error));
+        likeButton.classList.toggle('active', isLikedByUser);
+
+        button.addEventListener('click', event => {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append('article_id', articleId);
+
+            fetch(likeUrl, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrftoken,
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'liked' || data.status === 'unliked') {
+                    likeCount.textContent = data.like_count;
+                    const updatedIsLiked = data.status === 'liked';
+
+                    // Обновляем класс активности кнопки лайка
+                    likeButton.classList.toggle('active', updatedIsLiked);
+
+                    // Сохраняем состояние лайка в localStorage
+                    localStorage.setItem(likedKey, updatedIsLiked);
+                } else {
+                    console.error('Error:', data.message);
+                }
+            })
+            .catch(error => console.error(error));
+        });
     });
 });
 
@@ -81,6 +98,10 @@ function getCSRFToken() {
     }
     return cookieValue;
 }
+
+
+
+
 
 
 

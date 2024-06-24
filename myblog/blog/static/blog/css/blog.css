@@ -79,6 +79,7 @@
 
 .like-icon {
   margin-right: 5px; /* Отступ справа от иконки лайка */
+   color: black;
 }
 
 .like-count {
@@ -92,7 +93,9 @@
   color: rgb(161, 161, 161);
 }
 
-
+.like-icon.active {
+    fill: red;  /* Цвет активной кнопки "лайк" */
+}
 .btn-edit
  {
   background-color: rgb(17, 152, 118);
