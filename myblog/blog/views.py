@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.http import JsonResponse, HttpResponseForbidden
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_or_404
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -509,4 +509,35 @@ def notifications(request):
     data = [{'message': notification.message} for notification in notifications]
     return JsonResponse(data, safe=False)
 
+
+@login_required
+def notifications(request):
+    user = request.user
+    notifications = Notification.objects.filter(user=user).order_by('-created_at')[:10]
+    data = [{'id': notification.id, 'message': notification.message, 'read': notification.is_read} for notification in notifications]
+    return JsonResponse(data, safe=False)
+
+
+
+@csrf_exempt
+@login_required
+def mark_notification_as_read(request, notification_id):
+    if request.method == 'POST':
+        try:
+            notification = Notification.objects.get(id=notification_id, user=request.user)
+            notification.is_read = True
+            notification.save()
+            return JsonResponse({'status': 'success'})
+        except Notification.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Notification not found'}, status=404)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
+
+@csrf_exempt
+@login_required
+def mark_all_notifications_as_read(request):
+    if request.method == 'POST':
+        Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 

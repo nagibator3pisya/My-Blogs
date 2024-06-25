@@ -6,7 +6,8 @@ from . import views
 
 from .views import accept_cookies, logout_view, ProfileView, UserForgotPasswordView, UserPasswordResetConfirmView, \
     ArticleByCategoryListView, ArticleDetailView, ArticleCreateView, ArticleEditView, ArticleDeleteView, \
-    ArticleUpdateView, DraftsView, UserSettingsView, CommentCreateView, UserProfileView, LikeToggleView, article_list
+    ArticleUpdateView, DraftsView, UserSettingsView, CommentCreateView, UserProfileView, LikeToggleView, article_list, \
+    notifications, mark_all_notifications_as_read, mark_notification_as_read
 
 from django.contrib.auth import views as auth_views
 
@@ -38,7 +39,11 @@ urlpatterns = [
     path('profile/<str:username>/', UserProfileView.as_view(), name='user_profile'),
     path('like/', LikeToggleView.as_view(), name='like_toggle'),
     path('', article_list, name='article_list'),
-    path('api/notifications/', views.notifications, name='notifications_api'),
+    path('api/notifications/', views.notifications, name='notifications'),
+    path('api/notifications/mark-all-read/', views.mark_all_notifications_as_read,
+         name='mark_all_notifications_as_read'),
+    path('api/notifications/<int:notification_id>/mark-read/', views.mark_notification_as_read,
+         name='mark_notification_as_read'),
 ]
 
 if settings.DEBUG:

@@ -33,13 +33,13 @@
             <div class="ms-auto d-flex align-items-center">
                 <a  href="{% url 'articles_create' %}" class="btn btn-crete-blog me-3">Создать пост</a>
                 <div class="dropdown">
-                    <button class="btn btn-nav-bell dropdown-toggle" type="button" id="dropdownMenuButton1"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-nav-bell dropdown-toggle" type="button" id="dropdownNotifications"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-bell"></i>
+                        <span id="notificationCount" class="badge bg-danger">0</span>
                     </button>
-                    <ul class="dropdown-menu drop" aria-labelledby="dropdownMenuButton1">
-                        <!-- вот здесь будет уведомление                        -->
-
+                    <ul id="notificationDropdown" class="dropdown-menu drop" aria-labelledby="dropdownNotifications">
+                        <!-- Уведомления будут добавляться сюда через JavaScript -->
                     </ul>
                 </div>
                 <img src="{% if user.image %}{{ user.image.url }}{% else %}
@@ -104,32 +104,6 @@
 </div>
 
 {% block extra_script %}
-<script src="{% static 'blog/js/base.js' %}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-    const dropdownMenu = document.querySelector('.dropdown-menu');
+<script src="{% static 'blog/js/menu.js' %}"></script>
 
-    function addNotification(notification) {
-        const li = document.createElement('li');
-        li.classList.add('notification-item');
-        li.innerHTML = `
-            <a class="dropdown-item" href="#">${notification.message}</a>
-        `;
-        dropdownMenu.prepend(li);
-    }
-
-    function fetchNotifications() {
-        fetch('/api/notifications/')
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(notification => {
-                    addNotification(notification);
-                });
-            })
-            .catch(error => console.error('Error fetching notifications:', error));
-    }
-
-    fetchNotifications();
-});
-</script>
 {% endblock %}
