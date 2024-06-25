@@ -541,3 +541,12 @@ def mark_all_notifications_as_read(request):
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
+@login_required
+def show_more_notifications(request):
+    # Получаем все уведомления для текущего пользователя
+    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+
+    context = {
+        'notifications': notifications,
+    }
+    return render(request, 'blog/show_more_notifications.html', context)

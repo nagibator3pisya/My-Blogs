@@ -1,0 +1,20 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Все уведомления</h2>
+    <ul class="list-group mt-3">
+        {% for notification in notifications %}
+        <li class="list-group-item">
+            {% if notification.is_read %}
+            <span class="badge bg-success">Прочитано</span>
+            {% else %}
+            <span class="badge bg-danger">Не прочитано</span>
+            {% endif %}
+            <strong>{{ notification.created_at|date:"d.m.Y H:i" }}</strong>: {{ notification.message }}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

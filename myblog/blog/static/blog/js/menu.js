@@ -24,6 +24,22 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+        // Функция для добавления кнопки "Показать больше"
+        function addShowMoreButton() {
+            const li = document.createElement('li');
+            li.classList.add('show-more-item');
+            li.innerHTML = `
+                <button class="dropdown-item show-more-button" type="button">Показать больше</button>
+            `;
+            dropdownMenu.appendChild(li); // Добавляем кнопку в конец списка
+
+            // Добавляем обработчик клика для кнопки "Показать больше"
+            li.querySelector('button').addEventListener('click', function (event) {
+                event.preventDefault();
+                window.location.href = '/notifications/'; // Замените на нужный URL
+            });
+        }
+
         // Получение уведомлений через AJAX
         function fetchNotifications() {
             fetch('/api/notifications/', {
@@ -42,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Notifications fetched:', data);
                 if (data.length > 0) {
                     notificationCount.textContent = data.length;
-                    const existingIds = Array.from(dropdownMenu.children).map(item => item.querySelector('a').getAttribute('data-id'));
+                    const existingIds = Array.from(dropdownMenu.children).map(item => item.querySelector('a') ? item.querySelector('a').getAttribute('data-id') : null).filter(item => item !== null);
                     data.forEach(notification => {
                         if (!existingIds.includes(notification.id.toString())) {
                             addNotification(notification);
@@ -52,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     notificationCount.textContent = 0;
                 }
                 restoreReadNotifications(); // Восстанавливаем состояние прочитанных уведомлений
+                addShowMoreButton(); // Добавляем кнопку "Показать больше"
             })
             .catch(error => console.error('Error fetching notifications:', error));
         }
@@ -145,4 +162,3 @@ document.addEventListener('DOMContentLoaded', () => {
         return '';
     }
 });
-//fff

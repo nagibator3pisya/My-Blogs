@@ -44,6 +44,7 @@ urlpatterns = [
          name='mark_all_notifications_as_read'),
     path('api/notifications/<int:notification_id>/mark-read/', views.mark_notification_as_read,
          name='mark_notification_as_read'),
+    path('show-more-notifications/', views.show_more_notifications, name='show_more_notifications'),
 ]
 
 if settings.DEBUG:
