@@ -549,3 +549,5 @@ def show_more_notifications(request):
         'title': 'Уведомление'
     }
     return render(request, 'blog/show_more_notifications.html', context)
+
+

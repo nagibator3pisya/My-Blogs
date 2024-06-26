@@ -3,8 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const notificationCount = document.getElementById('notificationCount');
     const csrfToken = getCSRFToken();
 
-    console.log('CSRF Token:', csrfToken);
-
     if (dropdownMenu && notificationCount) {
         // Функция для добавления нового уведомления в меню
         function addNotification(notification) {
@@ -13,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
             li.innerHTML = `
                 <a class="dropdown-item ${notification.read ? 'read' : ''}" href="#" data-id="${notification.id}">${notification.message}</a>
             `;
-            dropdownMenu.prepend(li); // Добавляем уведомление в начало списка
+            dropdownMenu.insertBefore(li, dropdownMenu.lastElementChild); // Добавляем уведомление перед кнопкой "Показать больше"
 
             // Добавляем обработчик клика для отметки уведомления как прочитанного
             li.querySelector('a').addEventListener('click', function (event) {
@@ -38,15 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             })
             .then(data => {
-                console.log('Notifications fetched:', data);
                 if (data.length > 0) {
-                    const existingIds = Array.from(dropdownMenu.children).map(item => item.querySelector('a') ? item.querySelector('a').getAttribute('data-id') : null).filter(item => item !== null);
-                    data.forEach(notification => {
-                        if (!existingIds.includes(notification.id.toString())) {
-                            addNotification(notification);
-                        }
+                    const notificationsToShow = data.slice(0, 5); // Отображаем только первые 5 уведомлений
+                    notificationCount.textContent = notificationsToShow.length;
+                    notificationsToShow.forEach(notification => {
+                        addNotification(notification);
                     });
-                    updateNotificationCount();
                 } else {
                     notificationCount.textContent = 0;
                 }
@@ -65,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(response => {
                 if (response.ok) {
-                    console.log(`Notification ${notificationId} marked as read`);
                     element.classList.add('read');
                     updateNotificationCount();
                     saveReadNotification(notificationId); // Сохраняем прочитанное уведомление в localStorage
@@ -88,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Восстанавливаем состояние прочитанных уведомлений из localStorage
         function restoreReadNotifications() {
             const readNotifications = JSON.parse(localStorage.getItem('readNotifications')) || [];
-            const notificationItems = dropdownMenu.querySelectorAll('.dropdown-item');
+            const notificationItems = dropdownMenu.querySelectorAll('.notification-item .dropdown-item');
             notificationItems.forEach(item => {
                 const notificationId = item.getAttribute('data-id');
                 if (readNotifications.includes(notificationId)) {
@@ -100,8 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Обновить счетчик уведомлений
         function updateNotificationCount() {
-            const unreadCount = dropdownMenu.querySelectorAll('.dropdown-item:not(.read)').length;
-            notificationCount.textContent = unreadCount - 1; // Убираем 1 для учета "Показать больше"
+            const unreadCount = dropdownMenu.querySelectorAll('.notification-item .dropdown-item:not(.read)').length;
+            notificationCount.textContent = unreadCount;
         }
 
         // Вызываем функцию для получения уведомлений при загрузке страницы
