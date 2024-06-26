@@ -29,14 +29,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const li = document.createElement('li');
             li.classList.add('show-more-item');
             li.innerHTML = `
-                <button class="dropdown-item show-more-button" type="button">Показать больше</button>
+               <button class="dropdown-item show-more-button" type="button" data-url="{% url 'show_more_notifications' %}">Показать больше</button>
+
             `;
             dropdownMenu.appendChild(li); // Добавляем кнопку в конец списка
 
             // Добавляем обработчик клика для кнопки "Показать больше"
             li.querySelector('button').addEventListener('click', function (event) {
                 event.preventDefault();
-                window.location.href = '/notifications/'; // Замените на нужный URL
+                window.location.href = '{% url "show_more_notifications" %}'; // Используем Django template tag для получения URL
             });
         }
 
