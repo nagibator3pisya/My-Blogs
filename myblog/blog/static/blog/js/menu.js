@@ -1,12 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const dropdownMenu = document.getElementById('notificationDropdown');
     const notificationCount = document.getElementById('notificationCount');
-    const notificationDropdown = document.getElementById('dropdownNotifications');
     const csrfToken = getCSRFToken();
 
     console.log('CSRF Token:', csrfToken);
 
-    if (dropdownMenu && notificationCount && notificationDropdown) {
+    if (dropdownMenu && notificationCount) {
         // Функция для добавления нового уведомления в меню
         function addNotification(notification) {
             const li = document.createElement('li');
@@ -21,23 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 event.preventDefault();
                 const notificationId = this.getAttribute('data-id');
                 markNotificationAsRead(notificationId, this);
-            });
-        }
-
-        // Функция для добавления кнопки "Показать больше"
-        function addShowMoreButton() {
-            const li = document.createElement('li');
-            li.classList.add('show-more-item');
-            li.innerHTML = `
-               <button class="dropdown-item show-more-button" type="button" data-url="{% url 'show_more_notifications' %}">Показать больше</button>
-
-            `;
-            dropdownMenu.appendChild(li); // Добавляем кнопку в конец списка
-
-            // Добавляем обработчик клика для кнопки "Показать больше"
-            li.querySelector('button').addEventListener('click', function (event) {
-                event.preventDefault();
-                window.location.href = '{% url "show_more_notifications" %}'; // Используем Django template tag для получения URL
             });
         }
 
@@ -58,18 +40,17 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 console.log('Notifications fetched:', data);
                 if (data.length > 0) {
-                    notificationCount.textContent = data.length;
                     const existingIds = Array.from(dropdownMenu.children).map(item => item.querySelector('a') ? item.querySelector('a').getAttribute('data-id') : null).filter(item => item !== null);
                     data.forEach(notification => {
                         if (!existingIds.includes(notification.id.toString())) {
                             addNotification(notification);
                         }
                     });
+                    updateNotificationCount();
                 } else {
                     notificationCount.textContent = 0;
                 }
                 restoreReadNotifications(); // Восстанавливаем состояние прочитанных уведомлений
-                addShowMoreButton(); // Добавляем кнопку "Показать больше"
             })
             .catch(error => console.error('Error fetching notifications:', error));
         }
@@ -117,36 +98,14 @@ document.addEventListener('DOMContentLoaded', () => {
             updateNotificationCount(); // Обновляем счетчик прочитанных уведомлений
         }
 
-        // Отметить все уведомления как прочитанные
-        notificationDropdown.addEventListener('click', () => {
-            fetch('/api/notifications/mark-all-read/', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrfToken
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('All notifications marked as read');
-                    notificationCount.textContent = 0;
-                    dropdownMenu.querySelectorAll('.dropdown-item').forEach(item => item.classList.add('read'));
-                    localStorage.setItem('readNotifications', JSON.stringify([])); // Очищаем localStorage
-                } else {
-                    return response.json().then(data => { throw new Error(data.message); });
-                }
-            })
-            .catch(error => console.error('Error marking notifications as read:', error));
-        });
-
         // Обновить счетчик уведомлений
         function updateNotificationCount() {
             const unreadCount = dropdownMenu.querySelectorAll('.dropdown-item:not(.read)').length;
-            notificationCount.textContent = unreadCount;
+            notificationCount.textContent = unreadCount - 1; // Убираем 1 для учета "Показать больше"
         }
 
         // Вызываем функцию для получения уведомлений при загрузке страницы
         fetchNotifications();
-
     } else {
         console.error('One or more required elements not found.');
     }
