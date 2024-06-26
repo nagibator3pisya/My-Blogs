@@ -211,6 +211,10 @@ class Notification(models.Model):
 
 
 
+    def __str__(self):
+        return self.message
+
+
 class YourAppNameConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'blog'
