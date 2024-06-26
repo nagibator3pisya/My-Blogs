@@ -26,13 +26,13 @@
             <!-- Отображение элементов для аутентифицированного пользователя -->
             <div class="ms-auto d-flex align-items-center">
                 <a href="{% url 'articles_create' %}" class="btn btn-crete-blog me-3">Создать пост</a>
-                <div class="dropdown">
+                <div class="dropdown ">
                     <button class="btn btn-nav-bell dropdown-toggle" type="button" id="dropdownNotifications"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-bell"></i>
                         <span id="notificationCount" class="badge bg-danger">0</span>
                     </button>
-                <ul id="notificationDropdown" class="dropdown-menu drop" aria-labelledby="dropdownNotifications">
+                <ul id="notificationDropdown" class="dropdown-menu  drop " aria-labelledby="dropdownNotifications">
                     <li><a class="dropdown-item" href="{% url 'show_more_notifications' %}">Показать больше</a></li>
                 </ul>
                 </div>

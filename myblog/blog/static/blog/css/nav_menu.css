@@ -7,8 +7,9 @@
   border: none;
 }
 .drop{
-  left: 50% !important;
-  transform: translateX(-50%);
+  left: 40% !important;
+  transform: translateX(-60%);
+ 
 }
 
 .btn-crete-blog {

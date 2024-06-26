@@ -1,4 +1,4 @@
-
+from django.apps import AppConfig
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import FileExtensionValidator
 from django.urls import reverse
@@ -208,3 +208,12 @@ class Notification(models.Model):
     message = models.TextField()
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+class YourAppNameConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'blog'
+
+    def ready(self):
+        import blog.signals

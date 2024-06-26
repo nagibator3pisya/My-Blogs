@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const li = document.createElement('li');
             li.classList.add('notification-item');
             li.innerHTML = `
-                <a class="dropdown-item ${notification.read ? 'read' : ''}" href="#" data-id="${notification.id}">${notification.message}</a>
+                <a class="dropdown-item  ${notification.read ? 'read' : ''}" href="#" data-id="${notification.id}">${notification.message}</a>
             `;
             dropdownMenu.insertBefore(li, dropdownMenu.lastElementChild); // Добавляем уведомление перед кнопкой "Показать больше"
 

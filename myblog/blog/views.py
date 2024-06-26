@@ -7,6 +7,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_or_404
 from django.views import View
@@ -22,7 +24,9 @@ from django.contrib.auth import login as auth_login
 
 from blog.mixins import ViewCountMixin
 from blog.models import Article, Category, Comment, Like, Notification
-from blog.modules.services.utils import get_client_ip
+import logging
+
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -502,12 +506,6 @@ def article_list(request):
     return render(request, 'blog/blog.html', context)
 
 
-@login_required
-def notifications(request):
-    user = request.user
-    notifications = Notification.objects.filter(user=user).order_by('-created_at')[:10]
-    data = [{'message': notification.message} for notification in notifications]
-    return JsonResponse(data, safe=False)
 
 
 @login_required
@@ -551,3 +549,11 @@ def show_more_notifications(request):
     return render(request, 'blog/show_more_notifications.html', context)
 
 
+@receiver(post_save, sender=User)
+def user_created(sender, instance, created, **kwargs):
+    if created:
+        logger.info(f'Creating notification for user: {instance.username}')
+        Notification.objects.create(
+            user=instance,
+            message=f'Добро пожаловать! Вы можете дополнить свои данные в настройках профиля.'
+        )
