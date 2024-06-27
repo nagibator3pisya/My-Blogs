@@ -2,7 +2,7 @@
 from django.contrib import admin
 from mptt.admin import DraggableMPTTAdmin
 
-from blog.models import User, Article, Category, Comment, ViewCount
+from blog.models import User, Article, Category, Comment, ViewCount, Like, Notification
 
 admin.site.register(User)
 # admin.site.register(Article)
@@ -45,3 +45,23 @@ class CommentAdminPage(DraggableMPTTAdmin):
 @admin.register(ViewCount)
 class ViewCountAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Like)
+class LikeAdmin(admin.ModelAdmin):
+    list_display = ('user', 'article', 'get_comment_content', 'created_at')
+
+    def get_comment_content(self, obj):
+        # Проверяем, есть ли связанный комментарий к статье
+        if obj.article.comments.exists():
+            # Возвращаем текст первого комментария к статье
+            return obj.article.comments.first().content
+        else:
+            return "No comments"
+
+    get_comment_content.short_description = 'Comment Content'
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('user', 'message', 'created_at')
