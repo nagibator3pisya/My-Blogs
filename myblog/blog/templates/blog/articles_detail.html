@@ -6,10 +6,10 @@
 
 {% block content %}
     <strong>{{ article.title }}</strong>
-        <p>{{ article.full_description }}</p>
-        <small>{{ article.time_create }}</small>
-        <hr>
-        <span>{{ article.category.title }}</span>
+        <span>{{ article.full_description|safe }}</span>
+<!--        <small>{{ article.time_create }}</small>-->
+<!--        <hr>-->
+<!--        <span>{{ article.category.title }}</span>-->
 
 <div class="card border-0">
 	<div class="card-body">

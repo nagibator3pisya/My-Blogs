@@ -2,6 +2,7 @@ from django.apps import AppConfig
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import FileExtensionValidator
 from django.urls import reverse
+from markdownx.models import MarkdownxField
 
 from mptt.models import MPTTModel, TreeForeignKey
 from django.db import models
@@ -42,7 +43,7 @@ class Article(models.Model):
     slug = models.SlugField(verbose_name='URL', max_length=255, blank=True, unique=True)
     category = TreeForeignKey('Category', on_delete=models.PROTECT, related_name='articles', verbose_name='Категория')
     short_description = models.TextField(verbose_name='Краткое описание', max_length=500)
-    full_description = models.TextField(verbose_name='Полное описание')
+    full_description = MarkdownxField()
     thumbnail = models.ImageField(
         verbose_name='Превью поста',
         blank=True,

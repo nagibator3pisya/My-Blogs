@@ -1,5 +1,6 @@
 import re
 
+import markdown
 from django.contrib import auth, messages
 from django.contrib.auth import logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -317,6 +318,13 @@ class ArticleCreateView(CreateView):
                 if tag:
                     tag_obj, created = Tag.objects.get_or_create(name=tag)
                     article.tags.add(tag_obj)
+
+        # Преобразование содержимого статьи из Markdown в HTML
+        md = markdown.Markdown(extensions=["fenced_code"])
+        article.full_description = md.convert(article.full_description)
+
+        article.save()
+
         messages.success(self.request, self.success_message)
         return redirect(self.success_url)
 
