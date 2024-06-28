@@ -16,6 +16,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from markdown.extensions.codehilite import CodeHiliteExtension
 from taggit.models import Tag
 
 from blog.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserForgotPasswordForm, \
@@ -319,8 +320,11 @@ class ArticleCreateView(CreateView):
                     tag_obj, created = Tag.objects.get_or_create(name=tag)
                     article.tags.add(tag_obj)
 
-        # Преобразование содержимого статьи из Markdown в HTML
-        md = markdown.Markdown(extensions=["fenced_code"])
+        # Преобразование содержимого статьи из Markdown в HTML с подсветкой синтаксиса
+        md = markdown.Markdown(extensions=[
+            'fenced_code',
+            CodeHiliteExtension(linenums=False, css_class='highlight')
+        ])
         article.full_description = md.convert(article.full_description)
 
         article.save()
@@ -331,7 +335,6 @@ class ArticleCreateView(CreateView):
     def form_invalid(self, form):
         messages.error(self.request, 'Пожалуйста, исправьте ошибки в форме.')
         return super().form_invalid(form)
-
 
 
 

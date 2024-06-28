@@ -1,4 +1,22 @@
-.author{
-    text-decoration: none;
-    color: rgb(175, 175, 175);
+.author {
+  text-decoration: none;
+  color: rgb(175, 175, 175);
+}
+
+
+
+.btn-add-comment {
+  background-color: rgb(255, 250, 250);
+  color: rgb(0, 0, 0);
+  border: 1px solid rgba(90, 89, 89, 0.255);
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s; /* Анимация за 0.3 секунды */
+}
+.btn-add-comment:hover {
+  background-color: rgba(20, 184, 144, 1);
+  border-color: rgb(15, 218, 35);
+  color: rgba(255, 255, 255, 1) !important;
+}
+.btn-add-comment:active {
+  background-color: rgb(17, 116, 91) !important;
+  color: rgba(255, 255, 255, 1) !important;
 }

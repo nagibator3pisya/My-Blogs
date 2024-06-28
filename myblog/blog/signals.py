@@ -29,11 +29,3 @@ def post_commented(sender, instance, created, **kwargs):
             user=instance.post.author,
             message=f'Пользователь {instance.user.username} прокомментировал ваш пост.'
         )
-
-# @receiver(post_save, sender=Reply)  # предположим, у вас есть модель Reply для ответов на комментарии
-# def replied_to_comment(sender, instance, created, **kwargs):
-#     if created:
-#         Notification.objects.create(
-#             user=instance.parent_comment.user,
-#             message=f'Пользователь {instance.user.username} ответил на ваш комментарий.'
-#         )
