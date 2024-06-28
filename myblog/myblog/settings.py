@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'taggit',
 
 
+
 ]
 SITE_ID = 1
 

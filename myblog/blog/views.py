@@ -33,14 +33,14 @@ logger = logging.getLogger(__name__)
 User = get_user_model()
 
 
+
 class CanEditArticleMixin(UserPassesTestMixin):
     def test_func(self):
-        article = self.get_object()  # Получаем объект статьи, который мы хотим редактировать
-        return self.request.user == article.author  # Проверяем, является ли текущий пользователь автором статьи
+        article = self.get_object()
+        user = self.request.user
+        return user == article.author or user.is_superuser or user.groups.filter(name='Модераторы').exists()
 
     def handle_no_permission(self):
-        # Обработка случая, когда у пользователя нет прав доступа
-        # Можно вернуть 403 ошибку, перенаправление или что-то еще
         return HttpResponseForbidden('У вас нет прав на редактирование этой статьи')
 
 
@@ -374,6 +374,8 @@ class ArticleUpdateView(LoginRequiredMixin, CanEditArticleMixin, UpdateView):
     form_class = ArticleUpdateForm  # Используем только form_class
     success_message = 'Статья отредактирована'
     success_url = reverse_lazy('blog')
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -404,6 +406,7 @@ class ArticleDeleteView(LoginRequiredMixin, CanDeleteArticleMixin, DeleteView):
     success_url = reverse_lazy('blog')
     context_object_name = 'article'
     template_name = 'blog/articles_delete.html'
+    pk_url_kwarg = 'pk'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
