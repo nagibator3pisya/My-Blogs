@@ -97,8 +97,14 @@ def register(request):
 
 
 def blog(request):
-    context = {'title': 'Новостной блог'}
+    articles = Article.objects.filter(status='published')  # Получаем все опубликованные статьи
+    context = {
+        'title': 'Новостной блог',
+        'articles': articles,
+        'in_blog_section': True  # Указываем, что мы находимся в блоге
+    }
     return render(request, 'blog/blog.html', context)
+
 
 
 

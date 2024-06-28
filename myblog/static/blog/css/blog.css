@@ -1,0 +1,134 @@
+.card_post_not_found {
+  background-color: #ffffff71;
+  border: 2px dashed #c4c4c4;
+  color: #000000;
+}
+.dropdown-menu a {
+  cursor: pointer;
+}
+.btn-transparent::after {
+  border: none;
+}
+.btn-transparent {
+  border: none;
+}
+
+.thumbnail-image {
+  max-width: 100px; /* Измените это значение на нужный размер */
+  height: auto;
+}
+
+.btn-secondary {
+  position: relative;
+  text-decoration: none;
+  color: #000;
+  transition: color 0.3s ease;
+}
+
+.btn-secondary::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px; /* Толщина линии */
+  background-color: #23e129ec; /* Цвет линии */
+  transition: width 0.3s ease; /* Плавный переход ширины */
+}
+
+.btn-secondary:hover::after {
+  width: 100%; /* Ширина линии при наведении */
+}
+
+.btn-secondary:hover {
+  color: #000; /* Сохранение цвета текста при наведении */
+}
+
+.like-icon {
+  fill: currentColor; /* Устанавливаем цвет через currentColor */
+  color: black; /* Основной цвет иконки */
+  transition: color 0.3s ease; /* Плавный переход цвета */
+}
+
+.like-icon {
+  fill: currentColor; /* Устанавливаем цвет через currentColor */
+  color: black; /* Основной цвет иконки */
+  transition: color 0.3s ease; /* Плавный переход цвета */
+}
+
+
+.comment-container {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 15px; /* Отступ справа от контейнера с лайками */
+  border: 1px solid #888888ec; /* Цвет линии */
+  border-radius: 10px;
+  padding: 5px; /* Внутренний отступ */
+  transition: background-color 0.3s ease; /* Плавный переход цвета фона */
+  cursor: pointer; /* Указатель курсора при наведении */
+}
+
+.like-container {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 15px;
+  border: 1px solid #888888ec;
+  border-radius: 10px;
+  padding: 5px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.like-container:hover {
+  border: 1px solid #ff0000ec;
+  background-color: #ff000077;
+}
+
+.like-container.active {
+  background-color: red; /* Цвет фона при активации лайка */
+  border: 1px solid red; /* Цвет рамки при активации лайка */
+}
+
+.like-icon {
+  fill: currentColor;
+  color: black;
+  transition: color 0.3s ease;
+  margin-right: 5px;
+}
+
+.like-container.active .like-icon {
+  color: white; /* Цвет иконки при активации лайка */
+}
+
+.like-count {
+  font-size: 16px;
+  color: black; /* Цвет текста количества лайков */
+}
+
+.like-container.active .like-count {
+  color: white; /* Цвет текста при активации лайка */
+}
+
+.author {
+  text-decoration: none;
+  color: rgb(161, 161, 161);
+}
+.btn-edit
+ {
+  background-color: rgb(17, 152, 118);
+  color: rgb(255, 255, 255);
+  border: 1px solid rgba(90, 89, 89, 0.255);
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s; /* Анимация за 0.3 секунды */
+}
+
+.btn-edit:hover {
+  background-color: rgba(20, 184, 144, 1);
+  border-color: rgb(15, 218, 35);
+  color: rgba(255, 255, 255, 1);
+}
+
+.btn.btn-edit:active{
+  background-color: rgb(17, 116, 91);
+  border-color: rgb(15, 218, 35);
+  color: rgba(255, 255, 255, 1);
+}

@@ -82,13 +82,20 @@
                                         <p class="card-text m-2 text-break">{{ article.short_description }}</p>
                                     </div>
 
-                                    <div class="tags">
-                                        Тег:
-                                        {% for tag in article.tags.all %}
-                                        <span class="badge text-bg-success">{{ tag.name }}</span>
-                                        {% endfor %}
+                                     <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fw-bold me-1">Тег:</span>
+                                            {% for tag in article.tags.all %}
+                                            <span class="badge text-bg-success me-1">{{ tag.name }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% if in_blog_section %}
+                                        <div class="d-flex align-items-center">
+                                            <span class="fw-bold me-1">Категория:</span>
+                                            <span class="badge text-bg-success">{{ article.category.title }}</span>
+                                        </div>
+                                        {% endif %}
                                     </div>
-
 
                                 </div>
                                 <div class="card-footer d-flex justify-content-between align-items-center">
@@ -119,7 +126,7 @@
                                 </div>
 
 
-                                
+
                             </div>
                         </div>
                         <!-- Модальное окно -->

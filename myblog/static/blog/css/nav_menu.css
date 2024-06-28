@@ -1,0 +1,83 @@
+.btn-nav {
+  border: none;
+}
+
+.btn-nav-bell,
+.btn-nav-bell::after{
+  border: none;
+}
+.drop{
+  left: 40% !important;
+  transform: translateX(-60%);
+ 
+}
+.btn-answer-comment,
+.btn-crete-blog {
+  background-color: rgb(255, 250, 250);
+  color: rgb(0, 0, 0);
+  border: 1px solid rgba(90, 89, 89, 0.255);
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s; /* Анимация за 0.3 секунды */
+}
+.btn-answer-comment:hover,
+.btn-crete-blog:hover {
+  background-color: rgba(20, 184, 144, 1);
+  border-color: rgb(15, 218, 35);
+  color: rgba(255, 255, 255, 1) !important;
+}
+.btn-answer-comment:active,
+.btn-crete-blog:active {
+  background-color: rgb(17, 116, 91) !important;
+  color: rgba(255, 255, 255, 1) !important;
+}
+
+
+.nav-item:hover {
+  border-bottom-color: rgba(20, 184, 144, 1);
+  cursor: default;
+  color: rgba(20, 184, 144, 1);
+}
+
+.navbar-brand a {
+  margin-right: 8px;
+  color: #4caf50;
+  
+}
+
+.navbar-nav .nav-item {
+  font-size: 20px;
+  border-bottom: 2px solid transparent; /* Начальное состояние */
+  transition: color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.navbar-nav .nav-items a {
+  color: #666666; /* Начальный цвет текста */
+  text-decoration: none;
+}
+
+.navbar-nav .nav-items:hover {
+  border-bottom-color: rgba(
+    20,
+    184,
+    144,
+    1
+  ); /* Цвет подчеркивания при наведении */
+  cursor: pointer;
+  color: rgba(20, 184, 144, 1);
+}
+
+.navbar-nav .nav-item a:hover {
+  color: rgba(20, 184, 144, 1); /* Цвет текста при наведении */
+}
+
+.navbar-nav .nav-item.active a {
+  color: rgba(20, 184, 144, 1);
+  border-bottom-color: rgba(20, 184, 144, 1);
+}
+
+
+.photo-nav{
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  
+}

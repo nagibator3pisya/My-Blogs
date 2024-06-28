@@ -52,11 +52,17 @@ SITE_ID = 1
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'nagibatorpisya@gmail.com'
-EMAIL_HOST_PASSWORD = 'uyjr wjvd gwkc txpt'
+
+EMAIL_HOST_USER = 'menisraft@yandex.ru'
+EMAIL_HOST_PASSWORD = 'rebeofmhzqbpwjbh'
+
+EMAIL_SERVER = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_ADMIN = EMAIL_HOST_USER
 
 
 

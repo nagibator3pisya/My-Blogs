@@ -1,0 +1,194 @@
+/* Стиль для заголовка и кнопок */
+body{
+  background-color: #e0f7fa; 
+}
+.font {
+  font-family: Andale Mono, monospace;
+  font-size: 25px;
+}
+
+.btn-category {
+  background-color: rgb(255, 250, 250);
+  color: rgb(0, 0, 0);
+  border: 1px solid rgba(90, 89, 89, 0.255);
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s; /* Анимация за 0.3 секунды */
+}
+
+.btn-category:active {
+  background-color: rgb(125, 190, 211);
+}
+.btn-category:hover {
+  background-color: rgb(23, 179, 214);
+  border-color: rgb(74, 219, 245);
+  color: rgba(255, 255, 255, 1);
+}
+
+.about-me {
+  background-color: #aef0ff;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+.about-me-wrapper {
+  background-color: #ffffff;
+  margin-top: 50px;
+}
+
+.btn-go {
+  background-color: rgb(255, 250, 250);
+  color: rgb(0, 0, 0);
+  border: 1px solid rgba(90, 89, 89, 0.255);
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s; /* Анимация за 0.3 секунды */
+}
+
+.btn-go:hover {
+  background-color: rgba(20, 184, 144, 1);
+  border-color: rgb(15, 218, 35);
+  color: rgba(255, 255, 255, 1) !important;
+}
+
+.btn-go:active {
+  background-color: rgb(17, 116, 91) !important;
+  color: rgba(255, 255, 255, 1) !important;
+}
+
+
+@media (min-width: 768px) {
+
+  .navbar-nav {
+    text-align: center;
+  }
+
+ 
+}
+
+
+/* Кнопки регистрации и входа */
+.btn-enter-button,
+.btn-registration-button,
+.btn-go,
+.btn-registration,
+.btn-entrance {
+  background-color: rgb(255, 250, 250);
+  color: rgb(0, 0, 0);
+  border: 1px solid rgba(90, 89, 89, 0.255);
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s; /* Анимация за 0.3 секунды */
+}
+.btn-enter-button:hover,
+.btn-registration-button:hover,
+.btn-go:hover,
+.btn-registration:hover,
+.btn-entrance:hover {
+  background-color: rgba(20, 184, 144, 1);
+  border-color: rgb(15, 218, 35);
+  color: rgba(255, 255, 255, 1) !important;
+}
+.btn-enter-button:active,
+.btn-registration-button:active,
+.btn-go:active,
+.btn-registration:active,
+.btn-entrance:active {
+  background-color: rgb(17, 116, 91) !important;
+  color: rgba(255, 255, 255, 1) !important;
+}
+
+.nav-items:hover {
+  border-bottom-color: rgba(20, 184, 144, 1);
+  cursor: default;
+  color: rgba(20, 184, 144, 1);
+}
+
+.navbar-brand a {
+  margin-right: 8px;
+  color: #4caf50;
+}
+
+.navbar-nav .nav-items {
+  font-size: 19px;
+  border-bottom: 2px solid transparent; /* Начальное состояние */
+  transition: color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.navbar-nav .nav-items a {
+  color: #666666; /* Начальный цвет текста */
+  text-decoration: none;
+}
+
+.navbar-nav .nav-items:hover {
+  border-bottom-color: rgba(
+    20,
+    184,
+    144,
+    1
+  ); /* Цвет подчеркивания при наведении */
+  cursor: pointer;
+  color: rgba(20, 184, 144, 1);
+}
+
+.navbar-nav .nav-item a:hover {
+  color: rgba(20, 184, 144, 1); /* Цвет текста при наведении */
+}
+
+.navbar-nav .nav-item.active a {
+  color: rgba(20, 184, 144, 1);
+  border-bottom-color: rgba(20, 184, 144, 1);
+}
+/* куки */
+.wrapper {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  max-width: 365px;
+  background: #fff;
+  padding: 25px 25px 30px 25px;
+  border-radius: 15px;
+  box-shadow: 1px 7px 14px -5px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+.wrapper.hide {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+}
+
+.wrapper img {
+  max-width: 90px;
+}
+.content header {
+  font-size: 25px;
+  font-weight: 600;
+}
+.content {
+  margin-top: 10px;
+}
+.content p {
+  color: #858585;
+  margin: 5px 0 20px 0;
+}
+.content .buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.buttons button {
+  padding: 10px 20px;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 5px;
+  background: #fcba7f;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.buttons button:hover {
+  transform: scale(0.97);
+}
+.buttons .item {
+  margin: 0 10px;
+}
+.buttons a {
+  color: #fcba7f;
+}
