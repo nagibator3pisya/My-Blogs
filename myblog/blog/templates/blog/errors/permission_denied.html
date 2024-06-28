@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Доступ запрещен!</h4>
+        <p>{{ error_message }}</p>
+        <hr>
+        <p class="mb-0">Нажмите <a href="{{ return_url }}" class="alert-link">здесь</a>, чтобы вернуться на предыдущую страницу, или <a href="{% url 'home' %}">на главную страницу</a>.</p>
+    </div>
+</div>
+{% endblock %}

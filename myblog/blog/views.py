@@ -35,23 +35,40 @@ User = get_user_model()
 
 
 class CanEditArticleMixin(UserPassesTestMixin):
-    def test_func(self):
-        article = self.get_object()
-        user = self.request.user
-        return user == article.author or user.is_superuser or user.groups.filter(name='Модераторы').exists()
-
     def handle_no_permission(self):
-        return HttpResponseForbidden('У вас нет прав на редактирование этой статьи')
+        referer = self.request.META.get('HTTP_REFERER', '/')
+        return render(self.request, 'errors/permission_denied.html', {
+            'error_message': 'У вас нет прав на редактирование этой статьи',
+            'return_url': referer
+        }, status=403)
 
 
 class CanDeleteArticleMixin(UserPassesTestMixin):
-    def test_func(self):
-        article = self.get_object()
-        user = self.request.user
-        return user.is_superuser or user.groups.filter(name='Модераторы').exists() or article.author == user
-
     def handle_no_permission(self):
-        return HttpResponseForbidden('У вас нет прав на удаление этой статьи')
+        referer = self.request.META.get('HTTP_REFERER', '/')
+        return render(self.request, 'errors/permission_denied.html', {
+            'error_message': 'У вас нет прав на удаление этой статьи',
+            'return_url': referer
+        }, status=403)
+
+# class CanEditArticleMixin(UserPassesTestMixin):
+#     def test_func(self):
+#         article = self.get_object()
+#         user = self.request.user
+#         return user == article.author or user.is_superuser or user.groups.filter(name='Модераторы').exists()
+#
+#     def handle_no_permission(self):
+#         return HttpResponseForbidden('У вас нет прав на редактирование этой статьи')
+#
+#
+# class CanDeleteArticleMixin(UserPassesTestMixin):
+#     def test_func(self):
+#         article = self.get_object()
+#         user = self.request.user
+#         return user.is_superuser or user.groups.filter(name='Модераторы').exists() or article.author == user
+#
+#     def handle_no_permission(self):
+#         return HttpResponseForbidden('У вас нет прав на удаление этой статьи')
 
 
 def home(request):
@@ -577,3 +594,61 @@ def user_created(sender, instance, created, **kwargs):
             user=instance,
             message=f'Добро пожаловать! Вы можете дополнить свои данные в настройках профиля.'
         )
+
+
+
+
+
+def get_return_url(request):
+    """
+    Возвращает URL для перенаправления в зависимости от статуса аутентификации пользователя.
+    """
+    if request.user.is_authenticated:
+        return reverse('blog')  # Пример URL для авторизованных пользователей
+    else:
+        return reverse('home')  # Пример URL для неавторизованных пользователей
+
+
+
+
+
+
+
+def tr_handler404(request, exception):
+    """
+    Обработка ошибки 404
+    """
+    referer = request.META.get('HTTP_REFERER')
+    if not referer:
+        referer = get_return_url(request)
+    return render(request, 'blog/errors/error_page.html', {
+        'title': 'Страница не найдена: 404',
+        'error_message': 'К сожалению такая страница была не найдена, или перемещена',
+        'return_url': referer
+    }, status=404)
+
+def tr_handler500(request):
+    """
+    Обработка ошибки 500
+    """
+    referer = request.META.get('HTTP_REFERER')
+    if not referer:
+        referer = get_return_url(request)
+    return render(request, 'blog/errors/error_page.html', {
+        'title': 'Ошибка сервера: 500',
+        'error_message': 'Внутренняя ошибка сайта, вернитесь на главную страницу, отчет об ошибке мы направим администрации сайта',
+        'return_url': referer
+    }, status=500)
+
+def tr_handler403(request, exception):
+    """
+    Обработка ошибки 403
+    """
+    referer = request.META.get('HTTP_REFERER')
+    if not referer:
+        referer = get_return_url(request)
+    return render(request, 'blog/errors/error_page.html', {
+        'title': 'Ошибка доступа: 403',
+        'error_message': 'Доступ к этой странице ограничен',
+        'return_url': referer
+    }, status=403)

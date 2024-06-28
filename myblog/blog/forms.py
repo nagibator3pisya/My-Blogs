@@ -27,12 +27,7 @@ class UserLoginForm(AuthenticationForm):
     def clean (self):
         cleaned_data = super().clean()
         return cleaned_data
-    # коммитц если ничего не получится
-    # def clean_password(self):
-    #     password = self.cleaned_data.get('password')
-    #     if not password:
-    #         raise forms.ValidationError('Поле "Пароль" обязательно для заполнения.')
-    #     return password
+
 
 
 class UserRegistrationForm(UserCreationForm):
