@@ -9,7 +9,7 @@
     <h2>{{ title }}</h2>
     <form method="POST" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
-
+        {{ form.media }}
         <div class="mb-3">
             <label for="{{ form.title.id_for_label }}" class="form-label">Заголовок</label>
             {{ form.title }}

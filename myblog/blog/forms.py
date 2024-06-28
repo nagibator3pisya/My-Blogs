@@ -4,6 +4,8 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm, PasswordResetForm, \
     SetPasswordForm
 from django.core.exceptions import ValidationError
+from django_ckeditor_5.fields import CKEditor5Field
+from django_ckeditor_5.widgets import CKEditor5Widget
 from taggit.models import Tag
 
 from blog.models import User, Article, Category, Comment
@@ -207,11 +209,9 @@ class ArticleCreateForm(forms.ModelForm):
         error_messages={'required': 'Пожалуйста, введите краткое описание.'},
         max_length=100
     )
-    full_description = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Полное описание будет отображаться уже в детальной карточке'}),
-        required=True,
-        error_messages={'required': 'Пожалуйста, введите полное описание.'},
-
+    full_description = CKEditor5Field(
+        verbose_name='Полное описание',
+        config_name='extends'  # Указание конфигурации, если она отличается от стандартной
     )
     thumbnail = forms.ImageField(
         widget=forms.FileInput(attrs={'class': 'form-control'}),
@@ -232,26 +232,20 @@ class ArticleCreateForm(forms.ModelForm):
         model = Article
         fields = ('title', 'category', 'short_description', 'full_description', 'thumbnail', 'status', 'tags')
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        tags = self.cleaned_data['tags']
-        if commit:
-            instance.save()
-            instance.tags.clear()
-            tag_list = re.split(r'[,\s]+', tags)
-            for tag in tag_list:
-                tag = tag.strip()
-                if tag:
-                    tag_obj, created = Tag.objects.get_or_create(name=tag)
-                    instance.tags.add(tag_obj)
-        return instance
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Обновление атрибутов после инициализации формы
+        self.fields['short_description'].widget.attrs.update({'class': 'form-control'})
+        self.fields['full_description'].widget.attrs.update({'class': 'form-control django_ckeditor_5'})
+        self.fields['short_description'].required = False
+        self.fields['full_description'].required = False
 
 
 
 
 class ArticleDraftUpdateForm(forms.ModelForm):
     """
-    Форма для редактирования черновиков
+    Форма для редактирования черновиков статей.
     """
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     category = forms.ModelChoiceField(
@@ -261,14 +255,13 @@ class ArticleDraftUpdateForm(forms.ModelForm):
         error_messages={'required': 'Пожалуйста, выберите категорию.'}
     )
     short_description = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'form-control',  'placeholder': 'Краткое описание будет отображаться в новостной ленте'}),
+        widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Краткое описание будет отображаться в новостной ленте'}),
         required=True,
         error_messages={'required': 'Пожалуйста, введите краткое описание.'}
     )
-    full_description = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'form-control','placeholder': 'Полное описание будет отображаться уже в детальной карточке'}),
-        required=True,
-        error_messages={'required': 'Пожалуйста, введите полное описание.'}
+    full_description = CKEditor5Field(
+        verbose_name='Полное описание',
+        config_name='extends'  # Указание конфигурации, если она отличается от стандартной
     )
     thumbnail = forms.ImageField(
         widget=forms.FileInput(attrs={'class': 'form-control'}),
@@ -288,9 +281,6 @@ class ArticleDraftUpdateForm(forms.ModelForm):
     class Meta:
         model = Article
         fields = ('title', 'category', 'short_description', 'full_description', 'thumbnail', 'status', 'tags')
-
-
-
 
 
 class ArticleUpdateForm(ArticleCreateForm):
