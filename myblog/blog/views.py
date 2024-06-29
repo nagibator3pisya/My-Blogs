@@ -652,3 +652,5 @@ def tr_handler403(request, exception):
         'error_message': 'Доступ к этой странице ограничен',
         'return_url': referer
     }, status=403)
+
+#
